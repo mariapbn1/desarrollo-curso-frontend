@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Poster no disponible</title>
+  <desc id="desc">Imagen de respaldo para peliculas sin poster.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141a27" />
+      <stop offset="100%" stop-color="#2e3f63" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#bg)" />
+  <circle cx="440" cy="180" r="88" fill="rgba(255,255,255,0.08)" />
+  <rect x="78" y="620" width="270" height="16" rx="8" fill="rgba(255,255,255,0.18)" />
+  <rect x="78" y="654" width="198" height="16" rx="8" fill="rgba(255,255,255,0.12)" />
+  <path d="M180 322h240c18 0 32 14 32 32v154c0 18-14 32-32 32H180c-18 0-32-14-32-32V354c0-18 14-32 32-32zm26 44v130h188V366H206zm56-72h76v40h-76z" fill="rgba(255,255,255,0.82)" />
+  <text x="78" y="748" fill="#ffffff" font-family="Segoe UI, Arial, sans-serif" font-size="44" font-weight="700">
+    MAPA CINEMA
+  </text>
+  <text x="78" y="798" fill="rgba(255,255,255,0.72)" font-family="Segoe UI, Arial, sans-serif" font-size="28">
+    Poster no disponible
+  </text>
+</svg>

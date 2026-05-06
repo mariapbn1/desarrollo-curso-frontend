@@ -1,0 +1,47 @@
+@use "../abstracts/variables" as vars;
+
+.comment-card {
+  padding: 1rem 1rem 1.15rem;
+  border-radius: vars.$radius-md;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+
+  // anidamiento Sass: separacion entre comentarios
+  + .comment-card {
+    margin-top: 1rem;
+  }
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.comment-author {
+  font-weight: 700;
+}
+
+.comment-date {
+  color: vars.$color-muted;
+  font-size: 0.9rem;
+}
+
+.comment-text {
+  color: vars.$color-text;
+  margin-bottom: 1rem;
+}
+
+.btn-delete-comment {
+  color: vars.$color-danger;
+  border: 1px solid rgba(255, 93, 115, 0.24);
+
+  // anidamiento Sass: estados del boton eliminar
+  &:hover,
+  &:focus {
+    color: #fff;
+    background-color: rgba(255, 93, 115, 0.18);
+    border-color: rgba(255, 93, 115, 0.48);
+  }
+}

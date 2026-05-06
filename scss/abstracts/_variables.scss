@@ -1,0 +1,50 @@
+// variables Sass reutilizadas en colores, espaciados, sombras y bordes
+$color-bg: #06070a;
+$color-surface: rgba(18, 24, 38, 0.88);
+$color-surface-strong: #111827;
+$color-primary: #ff6847;
+$color-primary-hover: #ff876c;
+$color-text: #f5f7fb;
+$color-muted: #97a3b6;
+$color-border: rgba(255, 255, 255, 0.12);
+$color-danger: #ff5d73;
+$color-success: #40c79a;
+
+$shadow-soft: 0 22px 60px rgba(0, 0, 0, 0.25);
+$shadow-card: 0 16px 30px rgba(5, 10, 20, 0.35);
+
+$radius-lg: 1.5rem;
+$radius-md: 1rem;
+$radius-sm: 0.75rem;
+
+$font-base: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+$transition-base: 220ms ease;
+$space-section: clamp(4rem, 6vw, 6rem);
+$space-card: 1.5rem;
+
+$button-prefix: "app-btn";
+$pill-suffix: "pill";
+$state-active: "is-active";
+$state-success: "is-success";
+
+/* Estilos de la pagina  */
+:root {
+  --color-bg: #{$color-bg};
+  --color-surface: #{$color-surface};
+  --color-surface-strong: #{$color-surface-strong};
+  --color-primary: #{$color-primary};
+  --color-primary-hover: #{$color-primary-hover};
+  --color-text: #{$color-text};
+  --color-muted: #{$color-muted};
+  --color-border: #{$color-border};
+  --color-danger: #{$color-danger};
+  --color-success: #{$color-success};
+  --shadow-soft: #{$shadow-soft};
+  --shadow-card: #{$shadow-card};
+  --radius-lg: #{$radius-lg};
+  --radius-md: #{$radius-md};
+  --radius-sm: #{$radius-sm};
+  --transition-base: #{$transition-base};
+  --space-section: #{$space-section};
+  --space-card: #{$space-card};
+}

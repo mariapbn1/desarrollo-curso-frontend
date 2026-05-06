@@ -1,0 +1,44 @@
+@use "../abstracts/variables" as vars;
+
+.detail-header {
+  background-position: center;
+  background-size: cover;
+}
+
+.detail-poster {
+  width: 100%;
+  border-radius: vars.$radius-lg;
+  box-shadow: vars.$shadow-soft;
+  border: 1px solid vars.$color-border;
+}
+
+.movie-facts {
+  display: grid;
+  gap: 1rem;
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  dt {
+    color: vars.$color-muted;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+    text-align: right;
+  }
+}
+
+.gallery-image {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: vars.$radius-md;
+  border: 1px solid vars.$color-border;
+}

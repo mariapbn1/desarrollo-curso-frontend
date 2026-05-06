@@ -1,0 +1,55 @@
+@use "../abstracts/variables" as vars;
+
+// interpolacion Sass: arma variantes de botones desde variables
+.#{vars.$button-prefix}-primary,
+.#{vars.$button-prefix}-secondary {
+  border-radius: 999px;
+  padding: 0.85rem 1.5rem;
+  transition:
+    transform vars.$transition-base,
+    background-color vars.$transition-base,
+    border-color vars.$transition-base,
+    color vars.$transition-base;
+}
+
+.#{vars.$button-prefix}-primary {
+  background-color: vars.$color-primary;
+  border-color: vars.$color-primary;
+
+  // anidamiento Sass: estados del boton
+  &:hover,
+  &:focus {
+    background-color: vars.$color-primary-hover;
+    border-color: vars.$color-primary-hover;
+    transform: translateY(-1px);
+  }
+}
+
+.#{vars.$button-prefix}-secondary {
+  &:hover,
+  &:focus {
+    color: vars.$color-text;
+    border-color: rgba(255, 255, 255, 0.65);
+    transform: translateY(-1px);
+  }
+}
+
+.favorite-button {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: vars.$color-text;
+  background-color: transparent;
+
+  // anidamiento Sass: estado activo de favorita
+  &.#{vars.$state-active} {
+    border-color: rgba(64, 199, 154, 0.45);
+    background-color: rgba(64, 199, 154, 0.12);
+    color: #8cf5cf;
+  }
+}
+
+.#{vars.$button-prefix}-primary.#{vars.$state-active},
+.#{vars.$button-prefix}-secondary.#{vars.$state-active} {
+  border-color: rgba(64, 199, 154, 0.4);
+  background-color: rgba(64, 199, 154, 0.16);
+  color: #aef6d8;
+}

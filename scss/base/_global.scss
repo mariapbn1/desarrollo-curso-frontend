@@ -1,0 +1,16 @@
+@use "../abstracts/variables" as vars;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: vars.$font-base;
+  background:
+    radial-gradient(circle at top right, rgba(255, 104, 71, 0.18), transparent 24%),
+    radial-gradient(circle at bottom left, rgba(69, 120, 255, 0.12), transparent 28%),
+    vars.$color-bg;
+  color: vars.$color-text;
+  min-height: 100vh;
+}

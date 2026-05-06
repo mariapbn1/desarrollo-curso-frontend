@@ -1,0 +1,28 @@
+@use "../abstracts/variables" as vars;
+
+// interpolacion Sass: genera etiquetas desde el sufijo definido
+.meta-#{vars.$pill-suffix},
+.results-#{vars.$pill-suffix} {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid vars.$color-border;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+  color: vars.$color-text;
+  font-size: 0.9rem;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.chip {
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid vars.$color-border;
+  background: rgba(255, 255, 255, 0.04);
+}

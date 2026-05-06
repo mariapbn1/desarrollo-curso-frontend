@@ -1,0 +1,27 @@
+// archivo principal de Sass: importa los parciales que generan styles.css
+@use "abstracts/variables";
+@use "abstracts/functions";
+@use "abstracts/mixins";
+
+@use "base/reset";
+@use "base/typography";
+@use "base/global";
+
+@use "layout/navbar";
+@use "layout/hero";
+@use "layout/sections";
+@use "layout/footer";
+
+@use "components/buttons";
+@use "components/movie-card";
+@use "components/filters";
+@use "components/pagination";
+@use "components/comments";
+@use "components/forms";
+@use "components/badges";
+
+@use "pages/home";
+@use "pages/detail";
+@use "pages/auth";
+@use "pages/cart";
+@use "pages/contact";

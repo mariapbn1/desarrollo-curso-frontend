@@ -1,0 +1,51 @@
+@use "../abstracts/variables" as vars;
+
+.pagination-panel {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.pagination-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+.pagination-button {
+  min-width: 3rem;
+  padding: 0.8rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: vars.$color-text;
+  transition:
+    transform vars.$transition-base,
+    border-color vars.$transition-base,
+    background-color vars.$transition-base,
+    color vars.$transition-base;
+
+  // anidamiento Sass: estados de paginacion
+  &:hover,
+  &:focus {
+    transform: translateY(-1px);
+    border-color: rgba(255, 104, 71, 0.4);
+    color: vars.$color-text;
+  }
+
+  &.#{vars.$state-active} {
+    background-color: vars.$color-primary;
+    border-color: vars.$color-primary;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+  }
+}

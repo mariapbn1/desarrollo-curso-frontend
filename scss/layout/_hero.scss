@@ -1,0 +1,35 @@
+.hero-section,
+.detail-header {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section {
+  min-height: 100vh;
+  background-color: #0a0f18;
+  background-position: center;
+  background-size: cover;
+}
+
+.hero-overlay,
+.detail-banner-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(6, 7, 10, 0.92) 0%, rgba(6, 7, 10, 0.72) 42%, rgba(6, 7, 10, 0.4) 100%),
+    linear-gradient(180deg, rgba(6, 7, 10, 0.2) 0%, rgba(6, 7, 10, 0.84) 88%);
+}
+
+.hero-meta,
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .hero-section {
+    min-height: auto;
+  }
+}

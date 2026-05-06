@@ -4,8 +4,8 @@
  * persistencia de comentarios para una película específica.
  */
 (function () {
-  var movies = Array.isArray(window.MOVIES) ? window.MOVIES : [];
-  var storage = window.storageService;
+  var favoriteService = window.favoriteService;
+  var commentService = window.commentService;
 
   var SELECTORS = {
     detailBanner: document.getElementById("detail-banner"),
@@ -37,31 +37,6 @@
     poster: "assets/img/movie-fallback.svg",
   };
 
-
-  /**
-   * Función para categorizar información como géneros o etiquetas de fecha.
-   * @param {string} label - El texto que se mostrará dentro de la etiqueta.
-   * @returns {string} Cadena de texto con formato HTML (elemento <span>).
-   */
-  function createMetaPill(label) {
-    return '<span class="meta-pill">' + label + "</span>";
-  }
-
-  /**
-   * Transforma una cadena de fecha en un formato legible (día, mes y año).
-   * Configurado específicamente para el estándar de Colombia (es-CO).
-   * @example "2026-05-01" -> "1 de mayo de 2026"
-   * @param {string|Date} dateValue - La fecha original en formato ISO o un objeto Date.
-   * @returns {string} Fecha formateada.
-   */
-  function formatDate(dateValue) {
-    return new Date(dateValue).toLocaleDateString("es-CO", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
   /**
    * Convierte caracteres especiales de HTML en sus respectivas entidades seguras.
    * @param {string|number} value - El contenido que se desea convertir.
@@ -89,24 +64,13 @@
   }
 
   /**
-   * Localiza un objeto de película dentro del catálogo basándose en su ID único.
-   * @param {number} movieId - El ID de la película a buscar.
-   * @returns {Movie|undefined} El objeto de la película encontrada o undefined si no hay coincidencia.
-   */
-  function findMovieById(movieId) {
-    return movies.find(function (movie) {
-      return movie.id === movieId;
-    });
-  }
-
-  /**
    * Determina la etiqueta textual del botón de favoritos basándose en el 
    * estado de persistencia actual del usuario.
    * @param {number} movieId - ID de la película para verificar en el servicio de almacenamiento.
    * @returns {string} Texto descriptivo para la acción del botón ("Quitar..." o "Marcar...").
    */
   function buildFavoriteButtonLabel(movieId) {
-    return storage.isFavorite(movieId) ? "Quitar de favoritas" : "Marcar como favorita";
+    return favoriteService.isFavorite(movieId) ? "Quitar de favoritas" : "Marcar como favorita";
   }
 
   /**
@@ -121,14 +85,14 @@
     SELECTORS.detailPoster.dataset.fallbackSrc = FALLBACKS.poster;
     SELECTORS.detailTitle.textContent = movie.title;
     SELECTORS.detailMeta.innerHTML =
-      createMetaPill(movie.genre) +
-      createMetaPill(formatDate(movie.releaseDate)) +
-      createMetaPill("Calificación " + movie.rating.toFixed(1));
+      window.helpers.createMetaPill(movie.genre) +
+      window.helpers.createMetaPill(window.helpers.formatDate(movie.releaseDate)) +
+      window.helpers.createMetaPill("Calificación " + movie.rating.toFixed(1));
     SELECTORS.detailSynopsis.textContent = movie.synopsis;
     SELECTORS.detailReview.textContent = movie.review;
     SELECTORS.favoriteButton.dataset.movieId = movie.id;
     SELECTORS.favoriteButton.textContent = buildFavoriteButtonLabel(movie.id);
-    SELECTORS.favoriteButton.classList.toggle("is-active", storage.isFavorite(movie.id));
+    SELECTORS.favoriteButton.classList.toggle("is-active", favoriteService.isFavorite(movie.id));
 
     SELECTORS.actorsList.innerHTML = movie.actors
       .map(function (actor) {
@@ -137,7 +101,7 @@
       .join("");
 
     SELECTORS.movieFacts.innerHTML = [
-      { label: "Fecha de estreno", value: formatDate(movie.releaseDate) },
+      { label: "Fecha de estreno", value: window.helpers.formatDate(movie.releaseDate) },
       { label: "Género", value: movie.genre },
       { label: "Calificación", value: movie.rating.toFixed(1) + "/10" },
       { label: "Actores", value: movie.actors.length.toString() },
@@ -159,38 +123,6 @@
   }
 
   /**
-   * Configura mecanismos de recuperación ante fallos en la carga de imágenes.
-   * Si un recurso falla (error 404 o similar), se sustituye la fuente por un 
-   * recurso local de respaldo definido en los atributos data del elemento.
-   */
-  function bindImageFallbacks() {
-    [SELECTORS.detailPoster].forEach(function (image) {
-      if (!image) {
-        return;
-      }
-
-      function applyFallback(target) {
-        var fallbackSource = target.dataset.fallbackSrc;
-
-        if (!fallbackSource || target.dataset.fallbackApplied === "true") {
-          return;
-        }
-
-        target.dataset.fallbackApplied = "true";
-        target.src = fallbackSource;
-      }
-
-      image.addEventListener("error", function (event) {
-        applyFallback(event.currentTarget);
-      });
-
-      if (image.complete && image.naturalWidth === 0) {
-        applyFallback(image);
-      }
-    });
-  }
-
-  /**
    * Muestra el estado de película no encontrada.
    * Oculta la vista de detalle y muestra el mensaje correspondiente.
    */
@@ -201,20 +133,11 @@
   }
 
   /**
-   * Obtiene los comentarios guardados de una película en el LocalStorage.
-   * @param {number} movieId - ID de la película para recuperar comentarios.
-   * @returns {Array} Lista de comentarios asociados a la película.
-   */
-  function getComments(movieId) {
-    return storage.getMovieComments(movieId);
-  }
-
-  /**
    * Muestra los comentarios guardados de una película.
    * @param {number} movieId - ID de la película para mostrar comentarios.
    */
   function renderComments(movieId) {
-    var comments = getComments(movieId);
+    var comments = commentService.getMovieComments(movieId);
     SELECTORS.commentsCount.textContent = comments.length + (comments.length === 1 ? " comentario" : " comentarios");
     SELECTORS.commentsEmptyState.classList.toggle("d-none", comments.length > 0);
     SELECTORS.commentsList.innerHTML = comments
@@ -279,8 +202,7 @@
       return;
     }
 
-    var nextComments = [comment].concat(getComments(movieId));
-    var wasSaved = storage.saveMovieComments(movieId, nextComments);
+    var wasSaved = commentService.addMovieComment(movieId, comment);
 
     if (!wasSaved) {
       setFeedback("No fue posible guardar el comentario. Intenta nuevamente.");
@@ -298,11 +220,7 @@
    * @param {number} commentId - ID del comentario a eliminar.
    */
   function handleCommentDelete(movieId, commentId) {
-    var nextComments = getComments(movieId).filter(function (comment) {
-      return comment.id !== commentId;
-    });
-
-    if (storage.saveMovieComments(movieId, nextComments)) {
+    if (commentService.deleteMovieComment(movieId, commentId)) {
       renderComments(movieId);
       setFeedback("Comentario eliminado.", true);
     } else {
@@ -316,8 +234,8 @@
    */
   function bindEvents(movie) {
     SELECTORS.favoriteButton.addEventListener("click", function () {
-      storage.toggleFavorite(movie.id);
-      SELECTORS.favoriteButton.classList.toggle("is-active", storage.isFavorite(movie.id));
+      favoriteService.toggleFavorite(movie.id);
+      SELECTORS.favoriteButton.classList.toggle("is-active", favoriteService.isFavorite(movie.id));
       SELECTORS.favoriteButton.textContent = buildFavoriteButtonLabel(movie.id);
     });
 
@@ -340,7 +258,7 @@
    */
   function init() {
     var movieId = getMovieIdFromUrl();
-    var movie = findMovieById(movieId);
+    var movie = window.movieService.getMovieById(movieId);
 
     if (!movie) {
       showMovieNotFound();
@@ -348,7 +266,7 @@
     }
 
     renderMovie(movie);
-    bindImageFallbacks();
+    window.helpers.bindImageFallbacks(SELECTORS.detailPoster);
     renderComments(movie.id);
     bindEvents(movie);
   }

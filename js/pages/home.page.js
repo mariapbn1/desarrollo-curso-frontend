@@ -4,8 +4,8 @@
  * la búsqueda en tiempo real y la paginación de resultados.
  */
 (function () {
-  var movies = Array.isArray(window.MOVIES) ? window.MOVIES.slice() : [];
-  var storage = window.storageService;
+  var movies = window.movieService.getAllMovies();
+  var favoriteService = window.favoriteService;
 
   var CONFIG = {
     moviesPerPage: 9,
@@ -44,56 +44,12 @@
   };
 
   /**
-   * Transforma una cadena de fecha o un objeto Date en una representación 
-   * textual amigable siguiendo el estándar de Colombia (es-CO).
-   * @example "2026-05-01" -> "1 de mayo de 2026"
-   * @param {string|Date} dateValue - El valor de fecha a procesar. 
-   * Puede ser un string en formato ISO o una instancia de Date.
-   * @returns {string} La fecha formateada en lenguaje natural.
-   */
-  function formatDate(dateValue) {
-    return new Date(dateValue).toLocaleDateString("es-CO", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
-  /**
-   * Obtiene el año de estreno de la película.
-   * @param {Object} movie - El objeto de la película.
-   * @returns {string} El año de estreno.
-   */
-  function getMovieYear(movie) {
-    return new Date(movie.releaseDate).getFullYear().toString();
-  }
-
-  /**
-   * Ordena las películas de la más nueva a la más vieja.
-   * @param {Object} movieA - La primera película.
-   * @param {Object} movieB - La segunda película.
-   * @returns {number} El resultado de la comparación.
-   */
-  function sortByDateDesc(movieA, movieB) {
-    return new Date(movieB.releaseDate) - new Date(movieA.releaseDate);
-  }
-
-  /**
-   * Crea una etiqueta de texto para mostrar información.
-   * @param {string} label - El texto a mostrar.
-   * @returns {string} La etiqueta HTML.
-   */
-  function createMetaPill(label) {
-    return '<span class="meta-pill">' + label + "</span>";
-  }
-
-  /**
    * Define el texto del botón según si es favorita o no.
    * @param {number} movieId - ID de la película.
    * @returns {string} El texto del botón.
    */
   function buildFavoriteButtonLabel(movieId) {
-    return storage.isFavorite(movieId) ? "Quitar favorita" : "Marcar favorita";
+    return favoriteService.isFavorite(movieId) ? "Quitar favorita" : "Marcar favorita";
   }
 
   /**
@@ -166,18 +122,18 @@
       return;
     }
 
-    var featuredMovie = movies.slice().sort(sortByDateDesc)[0];
+    var featuredMovie = window.movieService.getLatestMovies(1)[0];
     SELECTORS.heroSection.style.backgroundImage = 'url("' + featuredMovie.banner + '")';
     SELECTORS.heroTitle.textContent = featuredMovie.title;
     SELECTORS.heroSynopsis.textContent = featuredMovie.synopsis;
     SELECTORS.heroMeta.innerHTML =
-      createMetaPill(featuredMovie.genre) +
-      createMetaPill(formatDate(featuredMovie.releaseDate)) +
-      createMetaPill("Calificacion " + featuredMovie.rating.toFixed(1));
+      window.helpers.createMetaPill(featuredMovie.genre) +
+      window.helpers.createMetaPill(window.helpers.formatDate(featuredMovie.releaseDate)) +
+      window.helpers.createMetaPill("Calificacion " + featuredMovie.rating.toFixed(1));
     SELECTORS.heroDetailLink.href = "movie-detail.html?id=" + featuredMovie.id;
     SELECTORS.heroFavoriteButton.textContent = buildFavoriteButtonLabel(featuredMovie.id);
     SELECTORS.heroFavoriteButton.dataset.movieId = featuredMovie.id;
-    SELECTORS.heroFavoriteButton.classList.toggle("is-active", storage.isFavorite(featuredMovie.id));
+    SELECTORS.heroFavoriteButton.classList.toggle("is-active", favoriteService.isFavorite(featuredMovie.id));
   }
 
   /**
@@ -195,7 +151,7 @@
     var years = Array.from(
       new Set(
         movies.map(function (movie) {
-          return getMovieYear(movie);
+          return window.movieService.getMovieYear(movie);
         })
       )
     ).sort(function (yearA, yearB) {
@@ -234,13 +190,13 @@
       .filter(function (movie) {
         var matchesSearch = movie.title.toLowerCase().includes(searchTerm);
         var matchesGenre = !selectedGenre || movie.genre === selectedGenre;
-        var matchesYear = !selectedYear || getMovieYear(movie) === selectedYear;
+        var matchesYear = !selectedYear || window.movieService.getMovieYear(movie) === selectedYear;
         var matchesRating = !selectedRating || movie.rating >= selectedRating;
-        var matchesFavorite = !onlyFavorites || storage.isFavorite(movie.id);
+        var matchesFavorite = !onlyFavorites || favoriteService.isFavorite(movie.id);
 
         return matchesSearch && matchesGenre && matchesYear && matchesRating && matchesFavorite;
       })
-      .sort(sortByDateDesc);
+      .sort(window.movieService.sortByDateDesc);
   }
 
   /**
@@ -264,7 +220,7 @@
       '<div class="movie-meta">',
       '<div class="movie-genre">' + movie.genre + "</div>",
       '<div class="movie-info-row">',
-      '<span class="movie-date">' + formatDate(movie.releaseDate) + "</span>",
+      '<span class="movie-date">' + window.helpers.formatDate(movie.releaseDate) + "</span>",
       '<span class="movie-rating">' + movie.rating.toFixed(1) + "</span>",
       "</div>",
       "</div>",
@@ -272,7 +228,7 @@
       '<div class="movie-actions">',
       '<a class="btn btn-primary app-btn-primary" href="movie-detail.html?id=' + movie.id + '">Ver detalle</a>',
       '<button class="btn favorite-button ' +
-        (storage.isFavorite(movie.id) ? "is-active" : "") +
+        (favoriteService.isFavorite(movie.id) ? "is-active" : "") +
         '" type="button" data-favorite-id="' +
         movie.id +
         '">' +
@@ -340,37 +296,7 @@
     SELECTORS.emptyState.classList.toggle("d-none", filteredMovies.length > 0);
     updateResultsCounter(filteredMovies.length);
     renderPagination(filteredMovies.length);
-    bindImageFallbacks(SELECTORS.moviesGrid);
-  }
-
-  /**
-   * Conecta los eventos de fallback para las imágenes.
-   * Es decir, si una imagen falla al cargar, usa una imagen de respaldo.
-   * @param {Element} scope - El ámbito en el que buscar imágenes.
-   */
-  function bindImageFallbacks(scope) {
-    var images = scope.querySelectorAll("img[data-fallback-src]");
-
-    images.forEach(function (image) {
-      function applyFallback(target) {
-        var fallbackSource = target.dataset.fallbackSrc;
-
-        if (!fallbackSource || target.dataset.fallbackApplied === "true") {
-          return;
-        }
-
-        target.dataset.fallbackApplied = "true";
-        target.src = fallbackSource;
-      }
-
-      image.addEventListener("error", function (event) {
-        applyFallback(event.currentTarget);
-      });
-
-      if (image.complete && image.naturalWidth === 0) {
-        applyFallback(image);
-      }
-    });
+    window.helpers.bindImageFallbacks(SELECTORS.moviesGrid);
   }
 
   /**
@@ -385,7 +311,7 @@
       '<a href="movie-detail.html?id=' + movie.id + '">' + movie.title + "</a>",
       '<div class="comment-date">' + movie.genre + " • " + movie.rating.toFixed(1) + "</div>",
       "</div>",
-      '<span class="meta-pill">' + getMovieYear(movie) + "</span>",
+      '<span class="meta-pill">' + window.movieService.getMovieYear(movie) + "</span>",
       "</div>",
     ].join("");
   }
@@ -394,15 +320,11 @@
    * Llena las secciones de estrenos, mejor calificadas y favoritas.
    */
   function renderCollections() {
-    var latestMovies = movies.slice().sort(sortByDateDesc).slice(0, 4);
-    var topRatedMovies = movies
-      .slice()
-      .sort(function (movieA, movieB) {
-        return movieB.rating - movieA.rating;
-      })
-      .slice(0, 4);
+    var latestMovies = window.movieService.getLatestMovies(4);
+    var topRatedMovies = window.movieService.getTopRatedMovies(4);
+    var favorites = favoriteService.getFavorites();
     var favoriteMovies = movies.filter(function (movie) {
-      return storage.isFavorite(movie.id);
+      return favorites.includes(movie.id);
     });
 
     SELECTORS.latestList.innerHTML = latestMovies.map(createMiniItem).join("");
@@ -417,7 +339,7 @@
    * @param {number} movieId - El ID de la película.
    */
   function refreshFavoriteButtons(movieId) {
-    var isActive = storage.isFavorite(movieId);
+    var isActive = favoriteService.isFavorite(movieId);
     var buttons = document.querySelectorAll('[data-favorite-id="' + movieId + '"]');
 
     buttons.forEach(function (button) {
@@ -436,7 +358,7 @@
    * @param {number} movieId - El ID de la película.
    */
   function handleFavoriteToggle(movieId) {
-    storage.toggleFavorite(movieId);
+    favoriteService.toggleFavorite(movieId);
     refreshFavoriteButtons(movieId);
     renderCollections();
     renderMovies();

@@ -1,5 +1,5 @@
 /**
- * Servicio de autenticacion local para el proyecto.
+ * Servicio de autenticacion de inicio de sesion local para el proyecto.
  * Usa localStorage solo como practica de frontend, no como seguridad real.
  */
 (function () {

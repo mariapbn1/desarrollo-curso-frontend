@@ -1,13 +1,22 @@
 @use "../abstracts/variables" as vars;
 
 .app-navbar {
-  background: linear-gradient(180deg, rgba(vars.$color-bg, 0.94), rgba(vars.$color-bg, 0.42));
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1050;
+  background: linear-gradient(180deg, rgba(#030512, 0.98), rgba(#05071a, 0.9));
   backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(vars.$color-primary, 0.72);
+  box-shadow:
+    0 0 18px rgba(vars.$color-primary, 0.28),
+    0 0 28px rgba(vars.$color-secondary, 0.12);
   padding: 0.75rem 1.5rem;
 
   // anidamiento Sass: variante de navbar
   &-detail {
-    background: transparent;
+    background: linear-gradient(180deg, rgba(#030512, 0.96), rgba(#05071a, 0.82));
   }
 }
 
@@ -15,22 +24,133 @@
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
-  font-size: 1.2rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+}
+
+.brand-logo {
+  width: clamp(10.5rem, 18vw, 14rem);
+  height: 4.5rem;
+  object-fit: cover;
+  object-position: center;
+  flex-shrink: 0;
+  filter:
+    drop-shadow(0 0 7px rgba(vars.$color-primary, 0.42))
+    drop-shadow(0 0 12px rgba(vars.$color-secondary, 0.22));
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.auth-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.nav-icon-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0.15rem 0.25rem;
+  border: 0;
+  background: transparent;
+  color: vars.$color-text;
+  text-decoration: none;
+  transition:
+    filter vars.$transition-base,
+    transform vars.$transition-base;
+
+  &:hover,
+  &:focus-visible,
+  &.is-active {
+    color: vars.$color-text;
+    filter: brightness(1.12);
+    transform: translateY(-1px) scale(1.06);
+  }
+}
+
+.cart-count-badge {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.05rem;
+  display: grid;
+  place-items: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.25rem;
+  border: 1px solid rgba(vars.$color-secondary, 0.78);
+  border-radius: 999px;
+  background: rgba(vars.$color-primary, 0.95);
+  color: vars.$color-text;
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow:
+    0 0 10px rgba(vars.$color-primary, 0.54),
+    0 0 12px rgba(vars.$color-secondary, 0.18);
+}
+
+.nav-icon-img {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter:
+    drop-shadow(0 0 8px rgba(vars.$color-primary, 0.46))
+    drop-shadow(0 0 12px rgba(vars.$color-secondary, 0.28));
+}
+
+.nav-icon-text {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.site-logo {
-  width: auto;
-  height: 2.75rem;
-  object-fit: contain;
-  flex-shrink: 0;
-  filter: drop-shadow(0 0 6px rgba(255, 200, 100, 0.3));
+.auth-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.15rem 0.25rem;
+  color: vars.$color-text;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(vars.$color-secondary, 0.2);
+}
+
+.auth-logout-button {
+  appearance: none;
+  padding-block: 0.45rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 @media (max-width: 767.98px) {
-  .site-logo {
-    height: 1.875rem;
+  .brand-logo {
+    width: 9.5rem;
+    height: 3.5rem;
+  }
+
+  .auth-nav {
+    justify-content: flex-start;
+  }
+
+  .navbar-actions {
+    justify-content: flex-start;
+  }
+
+  .nav-icon-img {
+    width: 1.85rem;
+    height: 1.85rem;
   }
 }

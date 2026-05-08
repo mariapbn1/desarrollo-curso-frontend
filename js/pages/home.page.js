@@ -6,9 +6,14 @@
 (function () {
   var movies = window.movieService.getAllMovies();
   var favoriteService = window.favoriteService;
+  var authService = window.authService;
+  var cartService = window.cartService;
 
   var CONFIG = {
     moviesPerPage: 9,
+    newReleaseSlides: 6,
+    newReleaseInterval: 5000,
+    featuredMovies: 4,
   };
   var FALLBACKS = {
     poster: "assets/img/movie-fallback.svg",
@@ -16,6 +21,10 @@
 
   var state = {
     currentPage: 1,
+    showOnlyFavorites: false,
+    newReleaseIndex: 0,
+    newReleaseTimerId: null,
+    newReleaseMovies: [],
   };
 
   var SELECTORS = {
@@ -29,8 +38,10 @@
     genreFilter: document.getElementById("genre-filter"),
     yearFilter: document.getElementById("year-filter"),
     ratingFilter: document.getElementById("rating-filter"),
-    favoriteFilter: document.getElementById("favorite-filter"),
-    catalogSection: document.getElementById("catalogo"),
+    catalogTitle: document.getElementById("catalog-title"),
+    catalogCopy: document.getElementById("catalog-copy"),
+    fullCatalogButtons: document.querySelectorAll('[data-action="show-full-catalog"]'),
+    catalogStart: document.getElementById("movies-grid"),
     moviesGrid: document.getElementById("movies-grid"),
     emptyState: document.getElementById("empty-state"),
     latestList: document.getElementById("latest-list"),
@@ -41,7 +52,60 @@
     paginationNumbers: document.getElementById("pagination-numbers"),
     paginationPrev: document.getElementById("pagination-prev"),
     paginationNext: document.getElementById("pagination-next"),
+    newReleasesCarousel: document.getElementById("new-releases-carousel"),
+    newReleasesTrack: document.getElementById("new-releases-track"),
+    newReleaseDots: document.getElementById("new-release-dots"),
+    newReleasePrev: document.getElementById("new-release-prev"),
+    newReleaseNext: document.getElementById("new-release-next"),
+    topRentalSection: document.getElementById("top-rental-section"),
+    topRentalGrid: document.getElementById("top-rental-grid"),
+    topRentalEmpty: document.getElementById("top-rental-empty"),
+    popularSection: document.getElementById("popular-section"),
+    popularGrid: document.getElementById("popular-grid"),
+    popularEmpty: document.getElementById("popular-empty"),
+    authNav: document.querySelector("[data-auth-nav]"),
+    favoritesNav: document.querySelector("[data-favorites-nav]"),
   };
+
+  /**
+   * Convierte caracteres especiales en texto seguro.
+   * @param {string} value - El texto a limpiar.
+   * @returns {string} El texto seguro.
+   */
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  /**
+   * Actualiza el estado de sesion en el navbar.
+   */
+  function renderAuthNav() {
+    var currentUser;
+
+    if (!authService) {
+      return;
+    }
+
+    currentUser = authService.getCurrentUser();
+
+    if (SELECTORS.authNav) {
+      SELECTORS.authNav.innerHTML = currentUser
+        ? '<span class="auth-user"><img src="assets/img/icon-user-neon.png" alt="Usuario" class="nav-icon-img" /><span>Hola, ' +
+          escapeHtml(currentUser.name) +
+          '</span></span><button class="nav-icon-link auth-logout-button" type="button" data-auth-logout>Salir</button>'
+        : '<a class="nav-icon-link" href="auth.html" aria-label="Ir a usuario"><img src="assets/img/icon-user-neon.png" alt="Usuario" class="nav-icon-img" /></a>';
+    }
+
+    if (SELECTORS.favoritesNav) {
+      SELECTORS.favoritesNav.classList.toggle("d-none", !currentUser);
+      SELECTORS.favoritesNav.classList.toggle("is-active", Boolean(currentUser && state.showOnlyFavorites));
+    }
+  }
 
   /**
    * Define el texto del botón según si es favorita o no.
@@ -49,7 +113,114 @@
    * @returns {string} El texto del botón.
    */
   function buildFavoriteButtonLabel(movieId) {
-    return favoriteService.isFavorite(movieId) ? "Quitar favorita" : "Marcar favorita";
+    if (!authService || !authService.isAuthenticated()) {
+      return "Inicia sesión para guardar en favoritas";
+    }
+
+    return favoriteService.isFavorite(movieId) ? "Quitar de favoritas" : "Agregar a favoritas";
+  }
+
+  /**
+   * Crea el boton de corazon para favoritas.
+   * @param {number} movieId - ID de la pelicula.
+   * @returns {string} El HTML del boton.
+   */
+  function createFavoriteToggleButton(movieId) {
+    return [
+      '<button class="movie-favorite-toggle ' +
+        (favoriteService.isFavorite(movieId) ? "is-active" : "") +
+        '" type="button" data-favorite-id="' +
+        movieId +
+        '" aria-label="' +
+        buildFavoriteButtonLabel(movieId) +
+        '" title="' +
+        buildFavoriteButtonLabel(movieId) +
+        '">' +
+        (favoriteService.isFavorite(movieId) ? "♥" : "♡") +
+        "</button>",
+    ].join("");
+  }
+
+  /**
+   * Define el texto del botón destacado de favoritas.
+   * @param {number} movieId - ID de la película.
+   * @returns {string} El texto del botón.
+   */
+  function buildHeroFavoriteButtonLabel(movieId) {
+    if (!authService || !authService.isAuthenticated()) {
+      return "Inicia sesión para guardar";
+    }
+
+    return favoriteService.isFavorite(movieId) ? "Quitar de favoritos" : "Agregar a favoritos";
+  }
+
+  /**
+   * Formatea el precio de renta para mostrarlo en la vista.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El precio listo para imprimir.
+   */
+  function getRentalPriceLabel(movie) {
+    if (typeof movie.rentalPrice !== "number") {
+      return "Consultar";
+    }
+
+    return "$" + movie.rentalPrice.toLocaleString("es-CO");
+  }
+
+  /**
+   * Obtiene el formato de renta con valor por defecto.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El formato disponible.
+   */
+  function getRentalFormat(movie) {
+    return movie.format || "Digital";
+  }
+
+  /**
+   * Obtiene el tiempo de renta con valor por defecto.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El tiempo de renta.
+   */
+  function getRentalTime(movie) {
+    return movie.rentalTime || "48 horas";
+  }
+
+  /**
+   * Revisa si la pelicula esta disponible para renta.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {boolean} La disponibilidad actual.
+   */
+  function isRentalAvailable(movie) {
+    if (typeof movie.available === "boolean") {
+      return movie.available;
+    }
+
+    return Number(movie.stock || 0) > 0;
+  }
+
+  /**
+   * Devuelve la etiqueta de disponibilidad.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El texto de disponibilidad.
+   */
+  function getAvailabilityLabel(movie) {
+    return isRentalAvailable(movie) ? "Disponible" : "No disponible";
+  }
+
+  /**
+   * Renderiza etiquetas de renta para la card.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El HTML de etiquetas.
+   */
+  function createRentalTags(movie) {
+    var tags = Array.isArray(movie.tags) && movie.tags.length ? movie.tags : [getRentalFormat(movie)];
+
+    return tags
+      .slice(0, 3)
+      .map(function (tag) {
+        return '<span class="rental-tag">' + tag + "</span>";
+      })
+      .join("");
   }
 
   /**
@@ -78,13 +249,49 @@
   }
 
   /**
-   * Desplaza la vista del usuario hacia el inicio de la sección del catálogo.
-   * Prioriza el desplazamiento hacia el contenedor del catálogo; si no existe, 
-   * se desplaza al inicio absoluto del documento.
+   * Actualiza el titulo del catalogo segun la vista activa.
+   */
+  function updateCatalogHeading() {
+    if (!SELECTORS.catalogTitle || !SELECTORS.catalogCopy) {
+      return;
+    }
+
+    SELECTORS.catalogTitle.textContent = state.showOnlyFavorites ? "Tus favoritas" : "Catálogo del videoclub";
+    SELECTORS.catalogCopy.textContent = state.showOnlyFavorites
+      ? "Estas son las películas que guardaste en tu lista."
+      : "Explora nuestro catálogo retro, filtra por género y guarda tus películas favoritas para rentarlas después.";
+
+    SELECTORS.fullCatalogButtons.forEach(function (button) {
+      button.classList.toggle("d-none", !state.showOnlyFavorites);
+    });
+  }
+
+  /**
+   * Vuelve al catalogo completo.
+   */
+  function showFullCatalog() {
+    state.showOnlyFavorites = false;
+    resetToFirstPage();
+    renderAuthNav();
+    updateCatalogHeading();
+    renderMovies();
+    scrollToCatalogStart();
+  }
+
+  /**
+   * Activa favoritas si la URL lo solicita y hay sesion.
+   */
+  function applyInitialFavoriteView() {
+    var searchParams = new URLSearchParams(window.location.search);
+    state.showOnlyFavorites = searchParams.get("view") === "favorites" && authService && authService.isAuthenticated();
+  }
+
+  /**
+   * Lleva el scroll al inicio del catalogo general.
    */
   function scrollToCatalogStart() {
-    if (SELECTORS.catalogSection) {
-      SELECTORS.catalogSection.scrollIntoView({
+    if (SELECTORS.catalogStart) {
+      SELECTORS.catalogStart.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
@@ -129,11 +336,161 @@
     SELECTORS.heroMeta.innerHTML =
       window.helpers.createMetaPill(featuredMovie.genre) +
       window.helpers.createMetaPill(window.helpers.formatDate(featuredMovie.releaseDate)) +
-      window.helpers.createMetaPill("Calificacion " + featuredMovie.rating.toFixed(1));
+      window.helpers.createMetaPill("Calificacion " + featuredMovie.rating.toFixed(1)) +
+      window.helpers.createMetaPill(getRentalPriceLabel(featuredMovie) + " / " + getRentalTime(featuredMovie)) +
+      window.helpers.createMetaPill(getAvailabilityLabel(featuredMovie));
     SELECTORS.heroDetailLink.href = "movie-detail.html?id=" + featuredMovie.id;
-    SELECTORS.heroFavoriteButton.textContent = buildFavoriteButtonLabel(featuredMovie.id);
+    SELECTORS.heroFavoriteButton.textContent = buildHeroFavoriteButtonLabel(featuredMovie.id);
     SELECTORS.heroFavoriteButton.dataset.movieId = featuredMovie.id;
     SELECTORS.heroFavoriteButton.classList.toggle("is-active", favoriteService.isFavorite(featuredMovie.id));
+  }
+
+  /**
+   * Recorta la sinopsis para usarla en novedades.
+   * @param {string} synopsis - El texto original.
+   * @returns {string} El texto breve.
+   */
+  function getShortSynopsis(synopsis) {
+    var cleanSynopsis = String(synopsis || "").trim();
+
+    if (cleanSynopsis.length <= 140) {
+      return cleanSynopsis;
+    }
+
+    return cleanSynopsis.slice(0, 137).trim() + "...";
+  }
+
+  /**
+   * Crea un slide del carrusel de novedades.
+   * @param {Object} movie - La pelicula del slide.
+   * @param {number} index - La posicion del slide.
+   * @returns {string} El HTML del slide.
+   */
+  function createNewReleaseSlide(movie, index) {
+    var imageUrl = movie.banner || movie.poster || FALLBACKS.poster;
+
+    return [
+      '<article class="new-release-slide ' + (index === 0 ? "is-active" : "") + '"',
+      ' style="background-image: url(' + escapeHtml(imageUrl) + ')"',
+      ' data-new-release-slide aria-hidden="' + (index === 0 ? "false" : "true") + '">',
+      '<div class="new-release-content">',
+      '<span class="rental-tag">ESTRENO</span>',
+      '<h3>' + escapeHtml(movie.title) + "</h3>",
+      '<p>' + escapeHtml(getShortSynopsis(movie.synopsis)) + "</p>",
+      '<div class="new-release-meta">',
+      window.helpers.createMetaPill(escapeHtml(movie.genre)),
+      window.helpers.createMetaPill(window.helpers.formatDate(movie.releaseDate)),
+      window.helpers.createMetaPill("Calificacion " + movie.rating.toFixed(1)),
+      "</div>",
+      '<a class="btn btn-primary app-btn-primary" href="movie-detail.html?id=' + movie.id + '">Ver detalle</a>',
+      "</div>",
+      "</article>",
+    ].join("");
+  }
+
+  /**
+   * Crea un indicador del carrusel.
+   * @param {number} index - La posicion del indicador.
+   * @returns {string} El HTML del indicador.
+   */
+  function createNewReleaseDot(index) {
+    return [
+      '<button class="new-release-dot ' + (index === 0 ? "is-active" : "") + '"',
+      ' type="button" data-new-release-index="' + index + '"',
+      ' aria-label="Ver novedad ' + (index + 1) + '"',
+      ' aria-current="' + (index === 0 ? "true" : "false") + '"></button>',
+    ].join("");
+  }
+
+  /**
+   * Actualiza el slide activo del carrusel.
+   */
+  function updateNewReleaseCarousel() {
+    var slides = SELECTORS.newReleasesTrack.querySelectorAll("[data-new-release-slide]");
+    var dots = SELECTORS.newReleaseDots.querySelectorAll("[data-new-release-index]");
+
+    slides.forEach(function (slide, index) {
+      var isActive = index === state.newReleaseIndex;
+      slide.classList.toggle("is-active", isActive);
+      slide.setAttribute("aria-hidden", String(!isActive));
+    });
+
+    dots.forEach(function (dot, index) {
+      var isActive = index === state.newReleaseIndex;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-current", String(isActive));
+    });
+  }
+
+  /**
+   * Detiene el autoplay de novedades.
+   */
+  function stopNewReleaseAutoplay() {
+    if (!state.newReleaseTimerId) {
+      return;
+    }
+
+    window.clearInterval(state.newReleaseTimerId);
+    state.newReleaseTimerId = null;
+  }
+
+  /**
+   * Muestra un slide por indice.
+   * @param {number} nextIndex - El indice a mostrar.
+   * @param {boolean} shouldRestart - Indica si reinicia el autoplay.
+   */
+  function showNewReleaseSlide(nextIndex, shouldRestart) {
+    var totalSlides = state.newReleaseMovies.length;
+
+    if (!totalSlides) {
+      return;
+    }
+
+    state.newReleaseIndex = (nextIndex + totalSlides) % totalSlides;
+    updateNewReleaseCarousel();
+
+    if (shouldRestart) {
+      startNewReleaseAutoplay();
+    }
+  }
+
+  /**
+   * Inicia el autoplay de novedades.
+   */
+  function startNewReleaseAutoplay() {
+    stopNewReleaseAutoplay();
+
+    if (state.newReleaseMovies.length <= 1) {
+      return;
+    }
+
+    state.newReleaseTimerId = window.setInterval(function () {
+      showNewReleaseSlide(state.newReleaseIndex + 1, false);
+    }, CONFIG.newReleaseInterval);
+  }
+
+  /**
+   * Renderiza las peliculas recientes en el carrusel.
+   */
+  function renderNewReleasesCarousel() {
+    if (!SELECTORS.newReleasesCarousel || !SELECTORS.newReleasesTrack || !SELECTORS.newReleaseDots) {
+      return;
+    }
+
+    state.newReleaseMovies = window.movieService.getLatestMovies(CONFIG.newReleaseSlides);
+    state.newReleaseIndex = 0;
+
+    if (!state.newReleaseMovies.length) {
+      SELECTORS.newReleasesCarousel.classList.add("d-none");
+      return;
+    }
+
+    SELECTORS.newReleasesTrack.innerHTML = state.newReleaseMovies.map(createNewReleaseSlide).join("");
+    SELECTORS.newReleaseDots.innerHTML = state.newReleaseMovies.map(function (_, index) {
+      return createNewReleaseDot(index);
+    }).join("");
+    updateNewReleaseCarousel();
+    startNewReleaseAutoplay();
   }
 
   /**
@@ -184,7 +541,6 @@
     var selectedGenre = SELECTORS.genreFilter.value;
     var selectedYear = SELECTORS.yearFilter.value;
     var selectedRating = Number(SELECTORS.ratingFilter.value || 0);
-    var onlyFavorites = SELECTORS.favoriteFilter.checked;
 
     return movies
       .filter(function (movie) {
@@ -192,7 +548,7 @@
         var matchesGenre = !selectedGenre || movie.genre === selectedGenre;
         var matchesYear = !selectedYear || window.movieService.getMovieYear(movie) === selectedYear;
         var matchesRating = !selectedRating || movie.rating >= selectedRating;
-        var matchesFavorite = !onlyFavorites || favoriteService.isFavorite(movie.id);
+        var matchesFavorite = !state.showOnlyFavorites || favoriteService.isFavorite(movie.id);
 
         return matchesSearch && matchesGenre && matchesYear && matchesRating && matchesFavorite;
       })
@@ -207,7 +563,8 @@
   function createMovieCard(movie) {
     return [
       '<div class="col-12 col-sm-6 col-md-4">',
-      '<article class="movie-card">',
+      '<article class="movie-card" data-format="' + getRentalFormat(movie) + '">',
+      createFavoriteToggleButton(movie.id),
       '<img class="movie-poster" src="' +
         movie.poster +
         '" alt="Poster de ' +
@@ -224,21 +581,112 @@
       '<span class="movie-rating">' + movie.rating.toFixed(1) + "</span>",
       "</div>",
       "</div>",
+      '<div class="movie-rental">',
+      '<div class="movie-rental-price"><span>' + getRentalPriceLabel(movie) + "</span> / " + getRentalTime(movie) + "</div>",
+      '<div class="movie-rental-meta">',
+      '<span class="rental-badge rental-format">' + getRentalFormat(movie) + "</span>",
+      '<span class="rental-badge rental-availability ' +
+        (isRentalAvailable(movie) ? "is-available" : "is-unavailable") +
+        '">' +
+        getAvailabilityLabel(movie) +
+        "</span>",
+      "</div>",
+      '<div class="rental-tags">' + createRentalTags(movie) + "</div>",
+      "</div>",
       '<p class="movie-description">' + movie.synopsis + "</p>",
       '<div class="movie-actions">',
       '<a class="btn btn-primary app-btn-primary" href="movie-detail.html?id=' + movie.id + '">Ver detalle</a>',
-      '<button class="btn favorite-button ' +
-        (favoriteService.isFavorite(movie.id) ? "is-active" : "") +
-        '" type="button" data-favorite-id="' +
+      '<button class="btn app-btn-secondary movie-cart-button ' +
+        (cartService && cartService.isInCart(movie.id) ? "is-in-cart" : "") +
+        '" type="button" data-cart-id="' +
         movie.id +
         '">' +
-        buildFavoriteButtonLabel(movie.id) +
+        (cartService && cartService.isInCart(movie.id) ? "En carrito" : "Agregar al carrito") +
         "</button>",
       "</div>",
       "</div>",
       "</article>",
       "</div>",
     ].join("");
+  }
+
+  /**
+   * Crea una card compacta para secciones destacadas.
+   * @param {Object} movie - La pelicula para mostrar.
+   * @param {string} badgeLabel - La etiqueta visual de la seccion.
+   * @returns {string} El HTML de la card destacada.
+   */
+  function createFeaturedMovieCard(movie, badgeLabel) {
+    return [
+      '<div class="col-12 col-sm-6 col-lg-3">',
+      '<article class="featured-movie-card">',
+      '<div class="featured-movie-poster-wrap">',
+      '<img class="featured-movie-poster" src="' +
+        movie.poster +
+        '" alt="Poster de ' +
+        escapeHtml(movie.title) +
+        '" data-fallback-src="' +
+        FALLBACKS.poster +
+        '" />',
+      '<span class="rental-tag">' + escapeHtml(badgeLabel) + "</span>",
+      createFavoriteToggleButton(movie.id),
+      "</div>",
+      '<div class="featured-movie-body">',
+      '<h3>' + escapeHtml(movie.title) + "</h3>",
+      '<div class="featured-movie-meta">',
+      '<span>' + escapeHtml(movie.genre) + "</span>",
+      '<span>' + movie.rating.toFixed(1) + "</span>",
+      "</div>",
+      '<div class="movie-rental-price"><span>' + getRentalPriceLabel(movie) + "</span> / " + getRentalTime(movie) + "</div>",
+      '<a class="btn btn-primary app-btn-primary w-100" href="movie-detail.html?id=' + movie.id + '">Ver detalle</a>',
+      "</div>",
+      "</article>",
+      "</div>",
+    ].join("");
+  }
+
+  /**
+   * Renderiza una seccion destacada.
+   * @param {HTMLElement} section - La seccion contenedora.
+   * @param {HTMLElement} grid - El grid de cards.
+   * @param {HTMLElement} emptyState - El mensaje vacio.
+   * @param {Array} sectionMovies - Las peliculas a mostrar.
+   * @param {string} badgeLabel - La etiqueta visual de las cards.
+   */
+  function renderFeaturedSection(section, grid, emptyState, sectionMovies, badgeLabel) {
+    if (!section || !grid || !emptyState) {
+      return;
+    }
+
+    grid.innerHTML = sectionMovies.map(function (movie) {
+      return createFeaturedMovieCard(movie, badgeLabel);
+    }).join("");
+
+    emptyState.classList.toggle("d-none", sectionMovies.length > 0);
+    window.helpers.bindImageFallbacks(grid);
+  }
+
+  /**
+   * Llena las secciones Top renta y Mas populares.
+   */
+  function renderFeaturedMovieSections() {
+    var topRentalMovies = window.movieService.getTopRentalMovies(CONFIG.featuredMovies);
+    var popularMovies = window.movieService.getPopularMovies(CONFIG.featuredMovies);
+
+    renderFeaturedSection(
+      SELECTORS.topRentalSection,
+      SELECTORS.topRentalGrid,
+      SELECTORS.topRentalEmpty,
+      topRentalMovies,
+      "Top renta"
+    );
+    renderFeaturedSection(
+      SELECTORS.popularSection,
+      SELECTORS.popularGrid,
+      SELECTORS.popularEmpty,
+      popularMovies,
+      "Popular"
+    );
   }
 
   /**
@@ -292,6 +740,9 @@
     var filteredMovies = getFilteredMovies();
     var paginatedMovies = getPaginatedMovies(filteredMovies);
 
+    SELECTORS.emptyState.innerHTML = state.showOnlyFavorites
+      ? '<h3>No tienes películas favoritas todavía.</h3><p>Explora el catálogo y guarda las películas que quieras ver después.</p><button class="btn btn-primary app-btn-primary" type="button" data-action="show-full-catalog">Elegir favoritas</button>'
+      : "<h3>No se encontraron peliculas</h3><p>Prueba con otra busqueda o cambia los filtros para ver mas resultados.</p>";
     SELECTORS.moviesGrid.innerHTML = paginatedMovies.map(createMovieCard).join("");
     SELECTORS.emptyState.classList.toggle("d-none", filteredMovies.length > 0);
     updateResultsCounter(filteredMovies.length);
@@ -344,12 +795,14 @@
 
     buttons.forEach(function (button) {
       button.classList.toggle("is-active", isActive);
-      button.textContent = buildFavoriteButtonLabel(movieId);
+      button.textContent = isActive ? "♥" : "♡";
+      button.setAttribute("aria-label", buildFavoriteButtonLabel(movieId));
+      button.setAttribute("title", buildFavoriteButtonLabel(movieId));
     });
 
     if (Number(SELECTORS.heroFavoriteButton.dataset.movieId) === movieId) {
       SELECTORS.heroFavoriteButton.classList.toggle("is-active", isActive);
-      SELECTORS.heroFavoriteButton.textContent = buildFavoriteButtonLabel(movieId);
+      SELECTORS.heroFavoriteButton.textContent = buildHeroFavoriteButtonLabel(movieId);
     }
   }
 
@@ -358,6 +811,11 @@
    * @param {number} movieId - El ID de la película.
    */
   function handleFavoriteToggle(movieId) {
+    if (!authService || !authService.isAuthenticated()) {
+      window.location.href = "auth.html";
+      return;
+    }
+
     favoriteService.toggleFavorite(movieId);
     refreshFavoriteButtons(movieId);
     renderCollections();
@@ -379,22 +837,20 @@
       });
     });
 
-    SELECTORS.favoriteFilter.addEventListener("change", function () {
-      resetToFirstPage();
-      renderMovies();
-    });
   }
 
   /**
    * Conecta los eventos de los botones de favoritas.
    */
   function bindFavoriteEvents() {
-    SELECTORS.moviesGrid.addEventListener("click", function (event) {
+    document.addEventListener("click", function (event) {
       var favoriteButton = event.target.closest("[data-favorite-id]");
       if (!favoriteButton) {
         return;
       }
 
+      event.preventDefault();
+      event.stopPropagation();
       handleFavoriteToggle(Number(favoriteButton.dataset.favoriteId));
     });
 
@@ -436,12 +892,108 @@
   }
 
   /**
+   * Conecta controles del carrusel de novedades.
+   */
+  function bindNewReleaseEvents() {
+    if (!SELECTORS.newReleasesCarousel) {
+      return;
+    }
+
+    SELECTORS.newReleasePrev.addEventListener("click", function () {
+      showNewReleaseSlide(state.newReleaseIndex - 1, true);
+    });
+
+    SELECTORS.newReleaseNext.addEventListener("click", function () {
+      showNewReleaseSlide(state.newReleaseIndex + 1, true);
+    });
+
+    SELECTORS.newReleaseDots.addEventListener("click", function (event) {
+      var dot = event.target.closest("[data-new-release-index]");
+
+      if (!dot) {
+        return;
+      }
+
+      showNewReleaseSlide(Number(dot.dataset.newReleaseIndex), true);
+    });
+  }
+
+  /**
+   * Conecta el cierre de sesion desde el navbar.
+   */
+  function bindAuthNavEvents() {
+    if (!SELECTORS.authNav || !authService) {
+      return;
+    }
+
+    SELECTORS.authNav.addEventListener("click", function (event) {
+      if (!event.target.closest("[data-auth-logout]")) {
+        return;
+      }
+
+      authService.logoutUser();
+      renderHeroSection();
+      showFullCatalog();
+      renderCollections();
+    });
+  }
+
+  /**
+   * Conecta la vista de favoritas del navbar.
+   */
+  function bindFavoriteNavEvents() {
+    if (!SELECTORS.favoritesNav || !authService) {
+      return;
+    }
+
+    SELECTORS.favoritesNav.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      if (!authService.isAuthenticated()) {
+        return;
+      }
+
+      if (state.showOnlyFavorites) {
+        showFullCatalog();
+        return;
+      }
+
+      state.showOnlyFavorites = true;
+      resetToFirstPage();
+      renderAuthNav();
+      updateCatalogHeading();
+      renderMovies();
+      scrollToCatalogStart();
+    });
+  }
+
+  /**
+   * Conecta botones para volver al catalogo.
+   */
+  function bindFullCatalogEvents() {
+    document.addEventListener("click", function (event) {
+      var button = event.target.closest('[data-action="show-full-catalog"]');
+
+      if (!button) {
+        return;
+      }
+
+      event.preventDefault();
+      showFullCatalog();
+    });
+  }
+
+  /**
    * Agrupa todos los eventos de la página.
    */
   function bindEvents() {
     bindFilterEvents();
     bindFavoriteEvents();
     bindPaginationEvents();
+    bindNewReleaseEvents();
+    bindAuthNavEvents();
+    bindFavoriteNavEvents();
+    bindFullCatalogEvents();
   }
 
   /**
@@ -453,11 +1005,20 @@
         "<h3>No se encontraron peliculas</h3><p>Prueba con otra busqueda o cambia los filtros para ver mas resultados.</p>";
     }
 
+    applyInitialFavoriteView();
+    renderAuthNav();
+    updateCatalogHeading();
     fillSelectOptions();
     renderHeroSection();
+    renderNewReleasesCarousel();
+    renderFeaturedMovieSections();
     renderMovies();
     renderCollections();
     bindEvents();
+
+    window.mapaVideoClubHome = {
+      showFullCatalog: showFullCatalog,
+    };
   }
 
   init();

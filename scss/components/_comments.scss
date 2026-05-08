@@ -3,8 +3,13 @@
 .comment-card {
   padding: 1rem 1rem 1.15rem;
   border-radius: vars.$radius-md;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(vars.$color-secondary, 0.22);
+  background:
+    linear-gradient(180deg, rgba(9, 13, 34, 0.94), rgba(4, 7, 22, 0.92)),
+    rgba(0, 217, 255, 0.03);
+  box-shadow:
+    0 0 16px rgba(vars.$color-secondary, 0.08),
+    0 12px 30px rgba(0, 0, 0, 0.34);
 
   // anidamiento Sass: separacion entre comentarios
   + .comment-card {
@@ -21,6 +26,8 @@
 
 .comment-author {
   font-weight: 700;
+  color: vars.$color-text;
+  text-shadow: 0 0 10px rgba(vars.$color-primary, 0.18);
 }
 
 .comment-date {
@@ -35,13 +42,15 @@
 
 .btn-delete-comment {
   color: vars.$color-danger;
-  border: 1px solid rgba(255, 93, 115, 0.24);
+  border: 1px solid rgba(vars.$color-danger, 0.36);
+  background-color: rgba(vars.$color-danger, 0.06);
 
   // anidamiento Sass: estados del boton eliminar
   &:hover,
   &:focus {
     color: #fff;
-    background-color: rgba(255, 93, 115, 0.18);
-    border-color: rgba(255, 93, 115, 0.48);
+    background-color: rgba(vars.$color-danger, 0.2);
+    border-color: rgba(vars.$color-danger, 0.58);
+    box-shadow: 0 0 14px rgba(vars.$color-danger, 0.22);
   }
 }

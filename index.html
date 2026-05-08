@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Sitio web responsive de reseñas de películas con buscador, filtros, favoritos y detalle."
+      content="Videoclub online retro con catálogo de películas, filtros, favoritos y detalle."
     />
-    <title>MAPA CINEMA | Reseñas de Películas</title>
-    <link rel="icon" type="image/png" href="assets/img/logo-m.png" />
+    <title>MAPA VIDEO CLUB | Renta de Películas</title>
+    <link rel="icon" type="image/png" href="assets/img/logo-mapa-video-club-icon.png" />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -22,9 +22,8 @@
     <header class="site-header">
       <nav class="navbar navbar-expand-lg navbar-dark app-navbar">
         <div class="container">
-          <a class="navbar-brand brand-mark" href="index.html">
-            <img src="assets/img/logo-m.png" alt="Mapa Cinema Logo" class="site-logo" />
-            <span>MAPA CINEMA</span>
+          <a class="navbar-brand brand-mark" href="index.html" aria-label="MAPA VIDEO CLUB">
+            <img src="assets/img/logo-mapa-video-club.png" alt="MAPA VIDEO CLUB" class="brand-logo" />
           </a>
           <button
             class="navbar-toggler"
@@ -40,15 +39,28 @@
           <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#catalogo">Catálogo</a>
+                <a class="nav-link active" aria-current="page" href="#catalogo" data-action="show-full-catalog">
+                  Catálogo
+                </a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#colecciones">Colecciones</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#favoritos">Favoritas</a>
-              </li>
             </ul>
+            <div class="navbar-actions ms-lg-3 mt-3 mt-lg-0">
+              <a class="nav-icon-link d-none" href="#" aria-label="Ver mis favoritas" data-favorites-nav>
+                <img src="assets/img/icon-favorite-neon.png" alt="Favoritos" class="nav-icon-img" />
+              </a>
+              <a class="nav-icon-link cart-nav-link" href="#" aria-label="Abrir carrito" data-cart-open>
+                <img src="assets/img/icon-cart-neon.png" alt="Carrito" class="nav-icon-img" />
+                <span class="cart-count-badge d-none" data-cart-count>0</span>
+              </a>
+              <div class="auth-nav" data-auth-nav>
+                <a class="nav-icon-link" href="auth.html" aria-label="Ir a usuario">
+                  <img src="assets/img/icon-user-neon.png" alt="Usuario" class="nav-icon-img" />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </nav>
@@ -58,11 +70,10 @@
         <div class="container position-relative">
           <div class="row min-vh-100 align-items-center py-5">
             <div class="col-12 col-md-7 col-lg-6">
-              <span class="hero-kicker">Selección editorial</span>
-              <h1 class="hero-title" id="hero-title">Explora historias que dejan huella</h1>
+              <span class="hero-kicker">Nuevo en renta</span>
+              <h1 class="hero-title" id="hero-title">Elige tu próxima película</h1>
               <p class="hero-text" id="hero-synopsis">
-                Descubre reseñas, películas destacadas y una experiencia pensada para amantes del
-                cine.
+                Recorre los estantes digitales del videoclub y guarda tus favoritas para verlas después.
               </p>
               <div class="hero-meta" id="hero-meta"></div>
               <div class="d-flex flex-wrap gap-3 mt-4">
@@ -70,7 +81,7 @@
                   Ver detalle
                 </a>
                 <button class="btn btn-outline-light btn-lg app-btn-secondary" id="hero-favorite-button" type="button">
-                  Guardar en favoritas
+                  Agregar a favoritos
                 </button>
               </div>
             </div>
@@ -85,13 +96,18 @@
           <div class="section-heading d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
             <div>
               <span class="section-tag">Catálogo</span>
-              <h2 class="section-title">Reseñas organizadas por fecha de estreno</h2>
-              <p class="section-copy">
-                Busca por nombre, ajusta filtros y marca tus títulos preferidos para volver a ellos
-                después.
+              <h2 class="section-title" id="catalog-title">Catálogo del videoclub</h2>
+              <p class="section-copy" id="catalog-copy">
+                Explora nuestro catálogo retro, filtra por género y guarda tus películas favoritas
+                para rentarlas después.
               </p>
             </div>
-            <div class="results-pill" id="results-pill">0 películas</div>
+            <div class="catalog-heading-actions">
+              <button class="btn btn-outline-light app-btn-secondary d-none" type="button" data-action="show-full-catalog">
+                Ver catálogo completo
+              </button>
+              <div class="results-pill" id="results-pill">0 películas</div>
+            </div>
           </div>
 
           <div class="filters-panel">
@@ -127,16 +143,52 @@
                     <option value="7">7.0 o más</option>
                   </select>
                 </div>
-                <div class="col-12 col-sm-6 col-md-2">
-                  <label class="form-label d-block" for="favorite-filter">Favoritas</label>
-                  <div class="form-check form-switch app-switch">
-                    <input class="form-check-input" id="favorite-filter" type="checkbox" />
-                    <label class="form-check-label" for="favorite-filter">Solo favoritas</label>
-                  </div>
-                </div>
               </div>
             </form>
           </div>
+
+          <section class="new-releases-section" aria-labelledby="new-releases-title">
+            <div class="section-heading">
+              <span class="section-tag">Novedades</span>
+              <h2 class="section-title" id="new-releases-title">Novedades del videoclub</h2>
+              <p class="section-copy">Las peliculas mas recientes ya disponibles</p>
+            </div>
+
+            <div class="new-releases-carousel" id="new-releases-carousel" aria-label="Carrusel de novedades">
+              <div class="new-releases-track" id="new-releases-track" aria-live="polite"></div>
+              <button class="new-release-control is-prev" id="new-release-prev" type="button" aria-label="Novedad anterior">
+                <span aria-hidden="true">&lsaquo;</span>
+              </button>
+              <button class="new-release-control is-next" id="new-release-next" type="button" aria-label="Novedad siguiente">
+                <span aria-hidden="true">&rsaquo;</span>
+              </button>
+              <div class="new-release-dots" id="new-release-dots" aria-label="Indicadores de novedades"></div>
+            </div>
+          </section>
+
+          <section class="featured-section" id="top-rental-section" aria-labelledby="top-rental-title">
+            <div class="section-heading">
+              <span class="section-tag">Estante destacado</span>
+              <h2 class="section-title" id="top-rental-title">Top renta</h2>
+              <p class="section-copy">Las películas más solicitadas del videoclub.</p>
+            </div>
+            <div class="row g-4 featured-grid" id="top-rental-grid"></div>
+            <div class="empty-state d-none" id="top-rental-empty">
+              <p class="mb-0">Aún no hay películas marcadas como Top renta.</p>
+            </div>
+          </section>
+
+          <section class="featured-section" id="popular-section" aria-labelledby="popular-title">
+            <div class="section-heading">
+              <span class="section-tag">Favoritas del público</span>
+              <h2 class="section-title" id="popular-title">Más populares</h2>
+              <p class="section-copy">Las favoritas del público según su calificación.</p>
+            </div>
+            <div class="row g-4 featured-grid" id="popular-grid"></div>
+            <div class="empty-state d-none" id="popular-empty">
+              <p class="mb-0">No hay películas populares para mostrar.</p>
+            </div>
+          </section>
 
           <div class="row g-4" id="movies-grid" aria-live="polite"></div>
           <nav class="pagination-panel d-none" id="pagination-panel" aria-label="Paginacion de peliculas">
@@ -154,29 +206,29 @@
       <section class="collection-section" id="colecciones">
         <div class="container">
           <div class="section-heading">
-            <span class="section-tag">Colecciones</span>
-            <h2 class="section-title">Explora por estilo y momento</h2>
+            <span class="section-tag">Estantes destacados</span>
+            <h2 class="section-title">Rentas para tu próxima noche</h2>
           </div>
 
           <div class="row g-4">
             <div class="col-12 col-md-4">
               <article class="collection-card">
-                <h3>Estrenos recientes</h3>
-                <p>Historias contemporáneas y miradas frescas para abrir tu próxima noche de cine.</p>
+                <h3>Recién llegadas</h3>
+                <p>Nuevos títulos en el mostrador para abrir tu próxima noche de videoclub.</p>
                 <div id="latest-list" class="collection-list"></div>
               </article>
             </div>
             <div class="col-12 col-md-4">
               <article class="collection-card">
-                <h3>Mejor calificadas</h3>
-                <p>Películas que destacan por su dirección, ritmo y una recepción crítica sólida.</p>
+                <h3>Top rentas</h3>
+                <p>Las películas que más brillan entre quienes pasan seguido por el videoclub.</p>
                 <div id="top-rated-list" class="collection-list"></div>
               </article>
             </div>
             <div class="col-12 col-md-4" id="favoritos">
               <article class="collection-card">
-                <h3>Favoritas guardadas</h3>
-                <p>Un acceso rápido a las películas que marcaste para revisar o recomendar luego.</p>
+                <h3>Tu lista favorita</h3>
+                <p>Un estante personal con las películas que dejaste listas para rentar después.</p>
                 <div id="favorites-list" class="collection-list"></div>
               </article>
             </div>
@@ -184,6 +236,20 @@
         </div>
       </section>
     </main>
+
+    <div class="cart-modal" data-cart-modal aria-hidden="true">
+      <div class="cart-modal-backdrop" data-cart-close></div>
+      <section class="cart-panel" data-cart-panel role="dialog" aria-modal="true" aria-labelledby="cart-title" tabindex="-1">
+        <div class="cart-panel-header">
+          <div>
+            <span class="section-tag">Pedido retro</span>
+            <h2 class="cart-title" id="cart-title">Tu carrito</h2>
+          </div>
+          <button class="cart-close-button" type="button" data-cart-close aria-label="Cerrar carrito">&times;</button>
+        </div>
+        <div class="cart-content" data-cart-content></div>
+      </section>
+    </div>
 
     <footer class="site-footer">
       <div class="container">
@@ -199,6 +265,9 @@
     <script src="js/core/helpers.js"></script>
     <script src="js/services/movie.service.js"></script>
     <script src="js/services/favorite.service.js"></script>
+    <script src="js/services/auth.service.js"></script>
+    <script src="js/services/cart.service.js"></script>
     <script src="js/pages/home.page.js"></script>
+    <script src="js/core/cart.modal.js"></script>
   </body>
 </html>

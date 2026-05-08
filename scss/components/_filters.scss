@@ -1,13 +1,26 @@
 @use "../abstracts/variables" as vars;
 
 .filters-panel {
+  border-color: rgba(vars.$color-secondary, 0.48);
+  background:
+    linear-gradient(180deg, rgba(4, 8, 26, 0.94), rgba(3, 5, 18, 0.9)),
+    vars.$color-surface;
+  box-shadow:
+    0 0 22px rgba(vars.$color-secondary, 0.18),
+    0 16px 42px rgba(0, 0, 0, 0.42);
   margin: 2rem 0 2.5rem;
+
+  .form-label {
+    color: vars.$color-text;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
 }
 
 .app-switch {
   // anidamiento Sass: control interno del switch
   .form-check-input {
-    background-color: rgba(255, 255, 255, 0.16);
+    background-color: rgba(255, 255, 255, 0.12);
     border-color: vars.$color-border;
 
     &:checked {

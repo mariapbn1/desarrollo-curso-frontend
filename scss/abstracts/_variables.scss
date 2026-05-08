@@ -1,17 +1,19 @@
 // variables Sass reutilizadas en colores, espaciados, sombras y bordes
-$color-bg: #06070a;
-$color-surface: rgba(18, 24, 38, 0.88);
-$color-surface-strong: #111827;
-$color-primary: #ff6847;
-$color-primary-hover: #ff876c;
-$color-text: #f5f7fb;
-$color-muted: #97a3b6;
-$color-border: rgba(255, 255, 255, 0.12);
-$color-danger: #ff5d73;
-$color-success: #40c79a;
+$color-bg: #030512;
+$color-surface: rgba(8, 12, 32, 0.9);
+$color-surface-strong: #090d22;
+$color-primary: #ff2f6d;
+$color-primary-hover: #ff5a91;
+$color-secondary: #00d9ff;
+$color-accent: #9d4dff;
+$color-text: #f8fbff;
+$color-muted: #9aa7c7;
+$color-border: rgba(0, 217, 255, 0.22);
+$color-danger: #ff3f6c;
+$color-success: #38f58b;
 
-$shadow-soft: 0 22px 60px rgba(0, 0, 0, 0.25);
-$shadow-card: 0 16px 30px rgba(5, 10, 20, 0.35);
+$shadow-soft: 0 0 36px rgba(255, 47, 109, 0.16), 0 24px 70px rgba(0, 0, 0, 0.42);
+$shadow-card: 0 0 24px rgba(0, 217, 255, 0.1), 0 18px 40px rgba(0, 0, 0, 0.5);
 
 $radius-lg: 1.5rem;
 $radius-md: 1rem;
@@ -34,6 +36,8 @@ $state-success: "is-success";
   --color-surface-strong: #{$color-surface-strong};
   --color-primary: #{$color-primary};
   --color-primary-hover: #{$color-primary-hover};
+  --color-secondary: #{$color-secondary};
+  --color-accent: #{$color-accent};
   --color-text: #{$color-text};
   --color-muted: #{$color-muted};
   --color-border: #{$color-border};

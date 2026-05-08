@@ -13,7 +13,9 @@
   padding: clamp(1.25rem, 2vw, 1.75rem);
   border: 1px solid vars.$color-border;
   border-radius: vars.$radius-lg;
-  background: vars.$color-surface;
+  background:
+    linear-gradient(180deg, rgba(14, 18, 44, 0.94), rgba(5, 8, 24, 0.92)),
+    vars.$color-surface;
   backdrop-filter: blur(20px);
   box-shadow: vars.$shadow-soft;
 }
@@ -21,7 +23,7 @@
 .empty-state {
   padding: 2rem;
   text-align: center;
-  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border: 1px dashed rgba(vars.$color-secondary, 0.28);
   border-radius: vars.$radius-lg;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 217, 255, 0.04);
 }

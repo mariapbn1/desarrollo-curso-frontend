@@ -20,8 +20,8 @@
   min-width: 3rem;
   padding: 0.8rem 1.1rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(vars.$color-secondary, 0.32);
+  background: rgba(0, 217, 255, 0.04);
   color: vars.$color-text;
   transition:
     transform vars.$transition-base,
@@ -33,14 +33,17 @@
   &:hover,
   &:focus {
     transform: translateY(-1px);
-    border-color: rgba(255, 104, 71, 0.4);
+    border-color: rgba(vars.$color-primary, 0.62);
     color: vars.$color-text;
+    box-shadow: 0 0 16px rgba(vars.$color-primary, 0.24);
   }
 
   &.#{vars.$state-active} {
-    background-color: vars.$color-primary;
+    background:
+      linear-gradient(180deg, rgba(vars.$color-primary-hover, 0.95), rgba(vars.$color-primary, 0.88));
     border-color: vars.$color-primary;
     color: #fff;
+    box-shadow: 0 0 18px rgba(vars.$color-primary, 0.38);
   }
 
   &:disabled {

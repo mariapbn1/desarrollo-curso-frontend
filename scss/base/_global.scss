@@ -6,11 +6,20 @@ html {
 
 body {
   margin: 0;
+  padding-top: 6rem;
   font-family: vars.$font-base;
   background:
-    radial-gradient(circle at top right, rgba(255, 104, 71, 0.18), transparent 24%),
-    radial-gradient(circle at bottom left, rgba(69, 120, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 18% 8%, rgba(vars.$color-primary, 0.18), transparent 28%),
+    radial-gradient(circle at 86% 18%, rgba(vars.$color-secondary, 0.12), transparent 26%),
+    radial-gradient(circle at 50% 100%, rgba(vars.$color-accent, 0.18), transparent 34%),
+    linear-gradient(180deg, #05071a 0%, vars.$color-bg 44%, #02030b 100%),
     vars.$color-bg;
   color: vars.$color-text;
   min-height: 100vh;
+}
+
+@media (max-width: 767.98px) {
+  body {
+    padding-top: 5.25rem;
+  }
 }

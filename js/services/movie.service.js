@@ -62,6 +62,30 @@
       .slice(0, limit);
   }
 
+  /**
+   * Devuelve peliculas marcadas como Top renta.
+   * @param {number} limit - La cantidad de peliculas a devolver.
+   * @returns {Array} La lista de peliculas Top renta.
+   */
+  function getTopRentalMovies(limit) {
+    return getAllMovies()
+      .filter(function (movie) {
+        return Array.isArray(movie.tags) && movie.tags.some(function (tag) {
+          return String(tag).toLowerCase() === "top renta";
+        });
+      })
+      .slice(0, limit);
+  }
+
+  /**
+   * Devuelve las peliculas mas populares por calificacion.
+   * @param {number} limit - La cantidad de peliculas a devolver.
+   * @returns {Array} La lista de peliculas populares.
+   */
+  function getPopularMovies(limit) {
+    return getTopRatedMovies(limit);
+  }
+
   window.movieService = {
     getAllMovies: getAllMovies,
     getMovieById: getMovieById,
@@ -69,5 +93,7 @@
     sortByDateDesc: sortByDateDesc,
     getLatestMovies: getLatestMovies,
     getTopRatedMovies: getTopRatedMovies,
+    getTopRentalMovies: getTopRentalMovies,
+    getPopularMovies: getPopularMovies,
   };
 })();

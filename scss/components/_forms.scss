@@ -3,15 +3,17 @@
 .app-input,
 .app-select {
   min-height: 3rem;
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(3, 5, 18, 0.68);
   border-color: vars.$color-border;
   color: vars.$color-text;
 
   &:focus {
     color: vars.$color-text;
-    background-color: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 104, 71, 0.5);
-    box-shadow: 0 0 0 0.25rem rgba(255, 104, 71, 0.15);
+    background-color: rgba(5, 9, 28, 0.86);
+    border-color: rgba(vars.$color-secondary, 0.72);
+    box-shadow:
+      0 0 0 0.2rem rgba(vars.$color-secondary, 0.14),
+      0 0 16px rgba(vars.$color-secondary, 0.22);
   }
 }
 
@@ -27,4 +29,9 @@
   &.#{vars.$state-success} {
     color: vars.$color-success;
   }
+}
+
+.auth-form {
+  display: grid;
+  gap: 1rem;
 }

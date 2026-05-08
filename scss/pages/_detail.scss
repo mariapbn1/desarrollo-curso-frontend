@@ -3,13 +3,61 @@
 .detail-header {
   background-position: center;
   background-size: cover;
+  border-bottom: 1px solid rgba(vars.$color-primary, 0.6);
+  box-shadow:
+    inset 0 -1px 0 rgba(vars.$color-secondary, 0.34),
+    0 0 32px rgba(vars.$color-primary, 0.16);
+}
+
+#comments-section {
+  scroll-margin-top: 6.5rem;
+}
+
+.detail-title {
+  max-width: 12ch;
+  text-shadow:
+    0 0 20px rgba(vars.$color-primary, 0.42),
+    0 0 34px rgba(vars.$color-secondary, 0.14);
+}
+
+.detail-synopsis {
+  max-width: 48rem;
 }
 
 .detail-poster {
   width: 100%;
-  border-radius: vars.$radius-lg;
-  box-shadow: vars.$shadow-soft;
-  border: 1px solid vars.$color-border;
+  padding: 0.55rem;
+  border-radius: vars.$radius-md;
+  border: 1px solid rgba(vars.$color-primary, 0.62);
+  background:
+    linear-gradient(180deg, rgba(9, 13, 34, 0.96), rgba(3, 5, 18, 0.96)),
+    vars.$color-surface-strong;
+  box-shadow:
+    0 0 24px rgba(vars.$color-primary, 0.28),
+    0 0 28px rgba(vars.$color-secondary, 0.12),
+    0 22px 58px rgba(0, 0, 0, 0.55);
+  object-fit: cover;
+}
+
+.detail-main {
+  background:
+    linear-gradient(180deg, rgba(3, 5, 18, 0.98), rgba(5, 8, 24, 0.96)),
+    radial-gradient(circle at 86% 8%, rgba(vars.$color-accent, 0.14), transparent 30%);
+}
+
+.detail-main .content-panel {
+  border-color: rgba(vars.$color-secondary, 0.26);
+  background:
+    linear-gradient(180deg, rgba(11, 15, 38, 0.96), rgba(5, 8, 24, 0.94)),
+    vars.$color-surface;
+  box-shadow:
+    0 0 22px rgba(vars.$color-secondary, 0.1),
+    0 18px 42px rgba(0, 0, 0, 0.42);
+}
+
+.detail-main .panel-title {
+  color: vars.$color-text;
+  text-shadow: 0 0 14px rgba(vars.$color-primary, 0.22);
 }
 
 .movie-facts {
@@ -20,18 +68,36 @@
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(vars.$color-secondary, 0.18);
   }
 
   dt {
     color: vars.$color-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
   }
 
   dd {
     margin: 0;
     font-weight: 600;
     text-align: right;
+    color: vars.$color-text;
+  }
+
+  .rental-price-value {
+    color: vars.$color-primary-hover;
+    font-weight: 800;
+    text-shadow: 0 0 12px rgba(vars.$color-primary, 0.34);
+  }
+
+  .rental-badge {
+    margin-left: auto;
+  }
+
+  .rental-fact-tags {
+    justify-content: flex-end;
   }
 }
 
@@ -40,5 +106,21 @@
   aspect-ratio: 16 / 10;
   object-fit: cover;
   border-radius: vars.$radius-md;
-  border: 1px solid vars.$color-border;
+  border: 1px solid rgba(vars.$color-secondary, 0.34);
+  box-shadow:
+    0 0 16px rgba(vars.$color-secondary, 0.12),
+    0 14px 34px rgba(0, 0, 0, 0.38);
+  transition:
+    transform vars.$transition-base,
+    border-color vars.$transition-base,
+    box-shadow vars.$transition-base;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: rgba(vars.$color-primary, 0.58);
+    box-shadow:
+      0 0 22px rgba(vars.$color-primary, 0.2),
+      0 0 20px rgba(vars.$color-secondary, 0.14),
+      0 16px 40px rgba(0, 0, 0, 0.5);
+  }
 }

@@ -19,6 +19,7 @@
 @use "components/comments";
 @use "components/forms";
 @use "components/badges";
+@use "components/cart" as cartComponent;
 
 @use "pages/home";
 @use "pages/detail";

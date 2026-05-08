@@ -1,1 +1,71 @@
-// Pagina de autenticacion.
+@use "../abstracts/variables" as vars;
+
+.auth-body {
+  min-height: 100vh;
+}
+
+.auth-main {
+  min-height: calc(100vh - 6rem);
+  display: flex;
+  align-items: center;
+}
+
+.auth-section {
+  width: 100%;
+  padding: vars.$space-section 0;
+}
+
+.auth-panel {
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid rgba(vars.$color-secondary, 0.28);
+  border-radius: vars.$radius-lg;
+  background:
+    linear-gradient(180deg, rgba(12, 17, 43, 0.96), rgba(5, 8, 24, 0.94)),
+    vars.$color-surface;
+  box-shadow:
+    0 0 26px rgba(vars.$color-secondary, 0.12),
+    0 0 32px rgba(vars.$color-primary, 0.12),
+    0 20px 58px rgba(0, 0, 0, 0.46);
+}
+
+.auth-panel-header {
+  margin-bottom: 1.5rem;
+}
+
+.auth-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(vars.$color-secondary, 0.18);
+  border-radius: 999px;
+  background: rgba(0, 217, 255, 0.04);
+}
+
+.auth-toggle-button {
+  min-height: 2.8rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: vars.$color-muted;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition:
+    color vars.$transition-base,
+    border-color vars.$transition-base,
+    box-shadow vars.$transition-base,
+    background-color vars.$transition-base;
+
+  &.#{vars.$state-active},
+  &:hover,
+  &:focus {
+    border-color: rgba(vars.$color-primary, 0.64);
+    background: rgba(vars.$color-primary, 0.1);
+    color: vars.$color-text;
+    box-shadow:
+      0 0 16px rgba(vars.$color-primary, 0.18),
+      inset 0 0 12px rgba(vars.$color-primary, 0.08);
+  }
+}

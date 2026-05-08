@@ -6,6 +6,7 @@
 (function () {
   var favoriteService = window.favoriteService;
   var commentService = window.commentService;
+  var authService = window.authService;
 
   var SELECTORS = {
     detailBanner: document.getElementById("detail-banner"),
@@ -27,6 +28,8 @@
     commentsCount: document.getElementById("comments-count"),
     movieNotFound: document.getElementById("movie-not-found"),
     detailView: document.getElementById("detail-view"),
+    authNav: document.querySelector("[data-auth-nav]"),
+    favoritesNav: document.querySelector("[data-favorites-nav]"),
   };
 
   /**
@@ -70,7 +73,113 @@
    * @returns {string} Texto descriptivo para la acción del botón ("Quitar..." o "Marcar...").
    */
   function buildFavoriteButtonLabel(movieId) {
-    return favoriteService.isFavorite(movieId) ? "Quitar de favoritas" : "Marcar como favorita";
+    if (!authService || !authService.isAuthenticated()) {
+      return "Inicia sesión para guardar";
+    }
+
+    return favoriteService.isFavorite(movieId) ? "Quitar de favoritos" : "Guardar en favoritos";
+  }
+
+  /**
+   * Actualiza el estado de sesion en el navbar.
+   */
+  function renderAuthNav() {
+    var currentUser;
+
+    if (!authService) {
+      return;
+    }
+
+    currentUser = authService.getCurrentUser();
+
+    if (SELECTORS.authNav) {
+      SELECTORS.authNav.innerHTML = currentUser
+        ? '<span class="auth-user"><img src="assets/img/icon-user-neon.png" alt="Usuario" class="nav-icon-img" /><span>Hola, ' +
+          escapeHtml(currentUser.name) +
+          '</span></span><button class="nav-icon-link auth-logout-button" type="button" data-auth-logout>Salir</button>'
+        : '<a class="nav-icon-link" href="auth.html" aria-label="Ir a usuario"><img src="assets/img/icon-user-neon.png" alt="Usuario" class="nav-icon-img" /></a>';
+    }
+
+    if (SELECTORS.favoritesNav) {
+      SELECTORS.favoritesNav.classList.toggle("d-none", !currentUser);
+    }
+  }
+
+  /**
+   * Formatea el precio de renta para mostrarlo en la ficha.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El precio listo para imprimir.
+   */
+  function getRentalPriceLabel(movie) {
+    if (typeof movie.rentalPrice !== "number") {
+      return "Consultar";
+    }
+
+    return "$" + movie.rentalPrice.toLocaleString("es-CO");
+  }
+
+  /**
+   * Obtiene el formato de renta con valor por defecto.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El formato disponible.
+   */
+  function getRentalFormat(movie) {
+    return movie.format || "Digital";
+  }
+
+  /**
+   * Obtiene el stock de renta con valor por defecto.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {number} El stock disponible.
+   */
+  function getRentalStock(movie) {
+    return typeof movie.stock === "number" ? movie.stock : 0;
+  }
+
+  /**
+   * Obtiene el tiempo de renta con valor por defecto.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El tiempo de renta.
+   */
+  function getRentalTime(movie) {
+    return movie.rentalTime || "48 horas";
+  }
+
+  /**
+   * Revisa si la pelicula esta disponible para renta.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {boolean} La disponibilidad actual.
+   */
+  function isRentalAvailable(movie) {
+    if (typeof movie.available === "boolean") {
+      return movie.available;
+    }
+
+    return getRentalStock(movie) > 0;
+  }
+
+  /**
+   * Devuelve la etiqueta de disponibilidad.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El texto de disponibilidad.
+   */
+  function getAvailabilityLabel(movie) {
+    return isRentalAvailable(movie) ? "Disponible" : "No disponible";
+  }
+
+  /**
+   * Renderiza etiquetas de renta para la ficha.
+   * @param {Object} movie - La pelicula con datos de renta.
+   * @returns {string} El HTML de etiquetas.
+   */
+  function createRentalTags(movie) {
+    var tags = Array.isArray(movie.tags) && movie.tags.length ? movie.tags : [getRentalFormat(movie)];
+
+    return tags
+      .map(function (tag) {
+        return '<span class="rental-tag">' + tag + "</span>";
+      })
+      .join("");
   }
 
   /**
@@ -87,7 +196,8 @@
     SELECTORS.detailMeta.innerHTML =
       window.helpers.createMetaPill(movie.genre) +
       window.helpers.createMetaPill(window.helpers.formatDate(movie.releaseDate)) +
-      window.helpers.createMetaPill("Calificación " + movie.rating.toFixed(1));
+      window.helpers.createMetaPill("Calificación " + movie.rating.toFixed(1)) +
+      window.helpers.createMetaPill(getRentalPriceLabel(movie) + " / " + getRentalTime(movie));
     SELECTORS.detailSynopsis.textContent = movie.synopsis;
     SELECTORS.detailReview.textContent = movie.review;
     SELECTORS.favoriteButton.dataset.movieId = movie.id;
@@ -105,6 +215,23 @@
       { label: "Género", value: movie.genre },
       { label: "Calificación", value: movie.rating.toFixed(1) + "/10" },
       { label: "Actores", value: movie.actors.length.toString() },
+      { label: "Precio de renta", value: '<span class="rental-price-value">' + getRentalPriceLabel(movie) + "</span>" },
+      { label: "Formato", value: '<span class="rental-badge rental-format">' + getRentalFormat(movie) + "</span>" },
+      {
+        label: "Disponibilidad",
+        value:
+          '<span class="rental-badge rental-availability ' +
+          (isRentalAvailable(movie) ? "is-available" : "is-unavailable") +
+          '">' +
+          getAvailabilityLabel(movie) +
+          "</span>",
+      },
+      {
+        label: "Stock",
+        value: getRentalStock(movie) + (getRentalStock(movie) === 1 ? " unidad" : " unidades"),
+      },
+      { label: "Tiempo de renta", value: getRentalTime(movie) },
+      { label: "Etiquetas", value: '<div class="rental-tags rental-fact-tags">' + createRentalTags(movie) + "</div>" },
     ]
       .map(function (item) {
         return "<div><dt>" + item.label + "</dt><dd>" + item.value + "</dd></div>";
@@ -229,11 +356,38 @@
   }
 
   /**
+   * Conecta el cierre de sesion desde el navbar.
+   */
+  function bindAuthNavEvents(movieId) {
+    if (!SELECTORS.authNav || !authService) {
+      return;
+    }
+
+    SELECTORS.authNav.addEventListener("click", function (event) {
+      if (!event.target.closest("[data-auth-logout]")) {
+        return;
+      }
+
+      authService.logoutUser();
+      renderAuthNav();
+      if (SELECTORS.favoriteButton && movieId) {
+        SELECTORS.favoriteButton.classList.remove("is-active");
+        SELECTORS.favoriteButton.textContent = buildFavoriteButtonLabel(movieId);
+      }
+    });
+  }
+
+  /**
    * Maneja los eventos de la vista (favorita, submit y eliminar comentario).
    * @param {Object} movie - El objeto de la película.
    */
   function bindEvents(movie) {
     SELECTORS.favoriteButton.addEventListener("click", function () {
+      if (!authService || !authService.isAuthenticated()) {
+        window.location.href = "auth.html";
+        return;
+      }
+
       favoriteService.toggleFavorite(movie.id);
       SELECTORS.favoriteButton.classList.toggle("is-active", favoriteService.isFavorite(movie.id));
       SELECTORS.favoriteButton.textContent = buildFavoriteButtonLabel(movie.id);
@@ -251,6 +405,7 @@
 
       handleCommentDelete(movie.id, Number(deleteButton.dataset.commentId));
     });
+
   }
 
   /**
@@ -260,11 +415,14 @@
     var movieId = getMovieIdFromUrl();
     var movie = window.movieService.getMovieById(movieId);
 
+    renderAuthNav();
+
     if (!movie) {
       showMovieNotFound();
       return;
     }
 
+    bindAuthNavEvents(movie.id);
     renderMovie(movie);
     window.helpers.bindImageFallbacks(SELECTORS.detailPoster);
     renderComments(movie.id);

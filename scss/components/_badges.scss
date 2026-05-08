@@ -8,10 +8,13 @@
   gap: 0.4rem;
   padding: 0.65rem 1rem;
   border: 1px solid vars.$color-border;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(0, 217, 255, 0.05);
   border-radius: 999px;
   color: vars.$color-text;
   font-size: 0.9rem;
+  box-shadow:
+    inset 0 0 12px rgba(vars.$color-secondary, 0.08),
+    0 0 16px rgba(vars.$color-secondary, 0.16);
 }
 
 .chip-list {
@@ -24,5 +27,66 @@
   padding: 0.7rem 1rem;
   border-radius: 999px;
   border: 1px solid vars.$color-border;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(vars.$color-accent, 0.08);
+  color: vars.$color-text;
+  box-shadow:
+    inset 0 0 12px rgba(vars.$color-accent, 0.08),
+    0 0 12px rgba(vars.$color-accent, 0.12);
+}
+
+.rental-badge,
+.rental-tag {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rental-badge {
+  padding: 0.42rem 0.65rem;
+  border: 1px solid rgba(vars.$color-secondary, 0.5);
+  background: rgba(vars.$color-secondary, 0.08);
+  color: vars.$color-secondary;
+  box-shadow: 0 0 12px rgba(vars.$color-secondary, 0.14);
+}
+
+.rental-format {
+  border-color: rgba(vars.$color-accent, 0.56);
+  background: rgba(vars.$color-accent, 0.1);
+  color: #dca8ff;
+  box-shadow: 0 0 12px rgba(vars.$color-accent, 0.16);
+}
+
+.rental-availability {
+  &.is-available {
+    border-color: rgba(vars.$color-success, 0.5);
+    background: rgba(vars.$color-success, 0.08);
+    color: vars.$color-success;
+    box-shadow: 0 0 12px rgba(vars.$color-success, 0.14);
+  }
+
+  &.is-unavailable {
+    border-color: rgba(vars.$color-danger, 0.5);
+    background: rgba(vars.$color-danger, 0.08);
+    color: vars.$color-danger;
+    box-shadow: 0 0 12px rgba(vars.$color-danger, 0.14);
+  }
+}
+
+.rental-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.rental-tag {
+  padding: 0.32rem 0.5rem;
+  border: 1px solid rgba(vars.$color-primary, 0.4);
+  background: rgba(vars.$color-primary, 0.08);
+  color: vars.$color-primary-hover;
+  box-shadow: 0 0 10px rgba(vars.$color-primary, 0.12);
 }

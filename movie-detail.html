@@ -163,6 +163,29 @@
       <img src="assets/img/icons/icon-whatsapp-neon.png" alt="" class="whatsapp-float__icon" />
     </button>
 
+    <div class="whatsapp-modal" data-whatsapp-modal aria-hidden="true" hidden>
+      <div class="whatsapp-modal__backdrop" data-whatsapp-close></div>
+      <section
+        class="whatsapp-modal__dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="whatsapp-modal-title"
+        tabindex="-1"
+      >
+        <button class="whatsapp-modal__close" type="button" data-whatsapp-close aria-label="Cerrar">&times;</button>
+        <span class="section-tag">Contacto directo</span>
+        <h2 class="whatsapp-modal__title" id="whatsapp-modal-title">Contactar por WhatsApp</h2>
+        <p class="whatsapp-modal__copy">Antes de abrir WhatsApp, revisa el mensaje que se enviará.</p>
+        <div class="whatsapp-modal__message">
+          Hola, quería hacer una consulta sobre una película de MAPA VIDEO CLUB.
+        </div>
+        <div class="whatsapp-modal__actions">
+          <button class="btn btn-outline-light app-btn-secondary" type="button" data-whatsapp-close>Cancelar</button>
+          <button class="btn btn-primary app-btn-primary" type="button" data-whatsapp-confirm>Contactar</button>
+        </div>
+      </section>
+    </div>
+
     <script src="js/data/movies.data.js"></script>
     <script src="js/core/storage.js"></script>
     <script src="js/core/helpers.js"></script>

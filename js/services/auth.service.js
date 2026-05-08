@@ -103,7 +103,7 @@
     }
 
     if (emailExists) {
-      return { success: false, message: "Ese correo ya esta registrado." };
+      return { success: false, message: "Este usuario ya está registrado." };
     }
 
     users.push({

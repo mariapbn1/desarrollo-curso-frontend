@@ -184,6 +184,21 @@
   text-shadow: 0 0 10px rgba(vars.$color-primary, 0.24);
 }
 
+.cart-item-status,
+.cart-warning {
+  color: vars.$color-danger !important;
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(vars.$color-danger, 0.22);
+}
+
+.cart-warning {
+  margin: 0.9rem 0 0;
+  padding: 0.8rem;
+  border: 1px solid rgba(vars.$color-danger, 0.28);
+  border-radius: vars.$radius-md;
+  background: rgba(vars.$color-danger, 0.06);
+}
+
 .cart-remove-button {
   border: 0;
   background: transparent;

@@ -2,7 +2,7 @@
  * Servicio de contacto por WhatsApp.
  */
 (function () {
-  var PHONE_NUMBER = "573505951584";
+  var PHONE_NUMBER = "573105841049";
   var CONTACT_MESSAGE = "Hola, quería hacer una consulta sobre una película de MAPA VIDEO CLUB.";
   var SELECTORS = {
     modal: document.querySelector("[data-whatsapp-modal]"),

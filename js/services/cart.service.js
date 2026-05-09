@@ -54,16 +54,51 @@
   }
 
   /**
+   * Busca una pelicula por id.
+   * @param {number} movieId - ID de la pelicula.
+   * @returns {Object|null} La pelicula encontrada.
+   */
+  function getMovieById(movieId) {
+    if (!window.movieService) {
+      return null;
+    }
+
+    return window.movieService.getMovieById(movieId) || null;
+  }
+
+  /**
+   * Revisa si una pelicula puede rentarse.
+   * @param {Object} movie - La pelicula a revisar.
+   * @returns {boolean} La disponibilidad para carrito.
+   */
+  function isMovieAvailable(movie) {
+    if (!movie) {
+      return false;
+    }
+
+    if (typeof movie.available === "boolean") {
+      return movie.available && Number(movie.stock || 0) > 0;
+    }
+
+    return Number(movie.stock || 0) > 0;
+  }
+
+  /**
    * Agrega una pelicula sin duplicarla.
    * @param {number} movieId - ID de la pelicula.
-   * @returns {Array} El carrito actualizado.
+   * @returns {Object} El resultado de la accion.
    */
   function addToCart(movieId) {
     var cart = getCart();
     var normalizedMovieId = Number(movieId);
+    var movie = getMovieById(normalizedMovieId);
 
     if (!normalizedMovieId || isInCart(normalizedMovieId)) {
-      return cart;
+      return { success: true, cart: cart };
+    }
+
+    if (!isMovieAvailable(movie)) {
+      return { success: false, message: "Esta pelicula esta agotada.", cart: cart };
     }
 
     cart.push({
@@ -71,7 +106,7 @@
       quantity: 1,
     });
 
-    return saveCart(cart);
+    return { success: true, cart: saveCart(cart) };
   }
 
   /**
@@ -134,6 +169,7 @@
           quantity: item.quantity,
           unitPrice: unitPrice,
           subtotal: unitPrice * item.quantity,
+          isAvailable: isMovieAvailable(movie),
         };
       })
       .filter(Boolean);

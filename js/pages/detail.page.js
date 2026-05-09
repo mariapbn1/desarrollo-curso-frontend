@@ -152,7 +152,7 @@
    */
   function isRentalAvailable(movie) {
     if (typeof movie.available === "boolean") {
-      return movie.available;
+      return movie.available && getRentalStock(movie) > 0;
     }
 
     return getRentalStock(movie) > 0;
@@ -164,7 +164,7 @@
    * @returns {string} El texto de disponibilidad.
    */
   function getAvailabilityLabel(movie) {
-    return isRentalAvailable(movie) ? "Disponible" : "No disponible";
+    return isRentalAvailable(movie) ? "Disponible" : "Agotada";
   }
 
   /**

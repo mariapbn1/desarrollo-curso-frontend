@@ -77,6 +77,11 @@
       var movieId = Number(button.dataset.cartId);
       var isInCart = cartService.isInCart(movieId);
 
+      if (button.disabled || button.classList.contains("is-unavailable")) {
+        button.textContent = "Agotada";
+        return;
+      }
+
       button.classList.toggle("is-in-cart", isInCart);
       button.textContent = isInCart ? "En carrito" : "Agregar al carrito";
     });
@@ -131,6 +136,7 @@
       '<h3>' + escapeHtml(movie.title) + "</h3>",
       '<p>' + escapeHtml(getRentalFormat(movie)) + "</p>",
       '<p class="cart-item-price">' + formatPrice(item.unitPrice) + " / " + escapeHtml(getRentalTime(movie)) + "</p>",
+      (!item.isAvailable ? '<p class="cart-item-status">Agotada</p>' : ""),
       "</div>",
       '<button class="cart-remove-button" type="button" data-cart-remove="' +
         movie.id +
@@ -145,15 +151,24 @@
    * @returns {string} El HTML del carrito.
    */
   function createCartList(items) {
+    var hasUnavailableItems = items.some(function (item) {
+      return !item.isAvailable;
+    });
+
     return [
       '<div class="cart-items">',
       items.map(createCartItem).join(""),
       "</div>",
+      hasUnavailableItems
+        ? '<p class="cart-warning">Retira las peliculas agotadas para continuar.</p>'
+        : "",
       '<div class="cart-summary">',
       '<span>Total</span>',
       '<strong>' + formatPrice(cartService.getCartTotal()) + "</strong>",
       "</div>",
-      '<button class="btn btn-primary app-btn-primary w-100" type="button" data-cart-buy>Comprar</button>',
+      '<button class="btn btn-primary app-btn-primary w-100" type="button" data-cart-buy ' +
+        (hasUnavailableItems ? 'disabled aria-disabled="true"' : "") +
+        ">Comprar</button>",
     ].join("");
   }
 
@@ -257,6 +272,11 @@
     var items = cartService.getCartItems();
 
     if (!items.length) {
+      return;
+    }
+
+    if (items.some(function (item) { return !item.isAvailable; })) {
+      renderCart();
       return;
     }
 

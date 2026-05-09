@@ -38,21 +38,26 @@
     genreFilter: document.getElementById("genre-filter"),
     yearFilter: document.getElementById("year-filter"),
     ratingFilter: document.getElementById("rating-filter"),
+    formatFilter: document.getElementById("format-filter"),
     catalogTitle: document.getElementById("catalog-title"),
     catalogCopy: document.getElementById("catalog-copy"),
     fullCatalogButtons: document.querySelectorAll('[data-action="show-full-catalog"]'),
+    clearFiltersButtons: document.querySelectorAll('[data-action="clear-filters"]'),
     catalogStart: document.getElementById("movies-grid"),
     moviesGrid: document.getElementById("movies-grid"),
     emptyState: document.getElementById("empty-state"),
     latestList: document.getElementById("latest-list"),
     topRatedList: document.getElementById("top-rated-list"),
     favoritesList: document.getElementById("favorites-list"),
+    favoriteShelf: document.getElementById("favoritos"),
+    collectionCards: document.querySelectorAll("#colecciones .row.g-4 > .col-12"),
     resultsPill: document.getElementById("results-pill"),
     paginationPanel: document.getElementById("pagination-panel"),
     paginationNumbers: document.getElementById("pagination-numbers"),
     paginationPrev: document.getElementById("pagination-prev"),
     paginationNext: document.getElementById("pagination-next"),
     newReleasesCarousel: document.getElementById("new-releases-carousel"),
+    newReleasesSection: document.querySelector(".new-releases-section"),
     newReleasesTrack: document.getElementById("new-releases-track"),
     newReleaseDots: document.getElementById("new-release-dots"),
     newReleasePrev: document.getElementById("new-release-prev"),
@@ -65,6 +70,7 @@
     popularEmpty: document.getElementById("popular-empty"),
     authNav: document.querySelector("[data-auth-nav]"),
     favoritesNav: document.querySelector("[data-favorites-nav]"),
+    collectionSection: document.getElementById("colecciones"),
   };
 
   /**
@@ -192,7 +198,7 @@
    */
   function isRentalAvailable(movie) {
     if (typeof movie.available === "boolean") {
-      return movie.available;
+      return movie.available && Number(movie.stock || 0) > 0;
     }
 
     return Number(movie.stock || 0) > 0;
@@ -204,7 +210,7 @@
    * @returns {string} El texto de disponibilidad.
    */
   function getAvailabilityLabel(movie) {
-    return isRentalAvailable(movie) ? "Disponible" : "No disponible";
+    return isRentalAvailable(movie) ? "Disponible" : "Agotada";
   }
 
   /**
@@ -249,20 +255,96 @@
   }
 
   /**
+   * Revisa si hay busqueda o filtros activos.
+   * @returns {boolean} true si hay filtros aplicados.
+   */
+  function hasActiveFieldFilters() {
+    return Boolean(
+      SELECTORS.searchInput.value.trim() ||
+        SELECTORS.genreFilter.value ||
+        SELECTORS.yearFilter.value ||
+        SELECTORS.ratingFilter.value ||
+        (SELECTORS.formatFilter && SELECTORS.formatFilter.value)
+    );
+  }
+
+  /**
+   * Revisa si la home esta en modo filtrado.
+   * @returns {boolean} true si debe mostrar solo resultados.
+   */
+  function hasActiveFilters() {
+    return hasActiveFieldFilters() || state.showOnlyFavorites;
+  }
+
+  /**
+   * Muestra u oculta secciones destacadas segun los filtros.
+   */
+  function toggleFeaturedSections() {
+    var shouldHideSections = hasActiveFilters();
+
+    [SELECTORS.newReleasesSection, SELECTORS.topRentalSection, SELECTORS.popularSection, SELECTORS.collectionSection].forEach(
+      function (section) {
+        if (section) {
+          section.classList.toggle("d-none", shouldHideSections);
+        }
+      }
+    );
+
+    if (shouldHideSections) {
+      stopNewReleaseAutoplay();
+      return;
+    }
+
+    startNewReleaseAutoplay();
+  }
+
+  /**
+   * Limpia busqueda, filtros y favoritas.
+   */
+  function clearFilters() {
+    SELECTORS.searchInput.value = "";
+    SELECTORS.genreFilter.value = "";
+    SELECTORS.yearFilter.value = "";
+    SELECTORS.ratingFilter.value = "";
+
+    if (SELECTORS.formatFilter) {
+      SELECTORS.formatFilter.value = "";
+    }
+
+    state.showOnlyFavorites = false;
+    resetToFirstPage();
+    renderAuthNav();
+    renderMovies();
+    scrollToCatalogStart();
+  }
+
+  /**
    * Actualiza el titulo del catalogo segun la vista activa.
    */
   function updateCatalogHeading() {
+    var hasFilters = hasActiveFieldFilters();
+
     if (!SELECTORS.catalogTitle || !SELECTORS.catalogCopy) {
       return;
     }
 
-    SELECTORS.catalogTitle.textContent = state.showOnlyFavorites ? "Tus favoritas" : "Catálogo del videoclub";
-    SELECTORS.catalogCopy.textContent = state.showOnlyFavorites
-      ? "Estas son las películas que guardaste en tu lista."
-      : "Explora nuestro catálogo retro, filtra por género y guarda tus películas favoritas para rentarlas después.";
+    if (state.showOnlyFavorites) {
+      SELECTORS.catalogTitle.textContent = "Tus favoritas";
+      SELECTORS.catalogCopy.textContent = "Estas son las películas que guardaste en tu lista.";
+    } else if (hasFilters) {
+      SELECTORS.catalogTitle.textContent = "Resultados filtrados";
+      SELECTORS.catalogCopy.textContent = "Películas que coinciden con tu búsqueda y filtros actuales.";
+    } else {
+      SELECTORS.catalogTitle.textContent = "Catálogo del videoclub";
+      SELECTORS.catalogCopy.textContent =
+        "Explora nuestro catálogo retro, filtra por género y guarda tus películas favoritas para rentarlas después.";
+    }
 
     SELECTORS.fullCatalogButtons.forEach(function (button) {
       button.classList.toggle("d-none", !state.showOnlyFavorites);
+    });
+    SELECTORS.clearFiltersButtons.forEach(function (button) {
+      button.classList.toggle("d-none", !hasActiveFilters());
     });
   }
 
@@ -270,12 +352,7 @@
    * Vuelve al catalogo completo.
    */
   function showFullCatalog() {
-    state.showOnlyFavorites = false;
-    resetToFirstPage();
-    renderAuthNav();
-    updateCatalogHeading();
-    renderMovies();
-    scrollToCatalogStart();
+    clearFilters();
   }
 
   /**
@@ -541,6 +618,7 @@
     var selectedGenre = SELECTORS.genreFilter.value;
     var selectedYear = SELECTORS.yearFilter.value;
     var selectedRating = Number(SELECTORS.ratingFilter.value || 0);
+    var selectedFormat = SELECTORS.formatFilter ? SELECTORS.formatFilter.value : "";
 
     return movies
       .filter(function (movie) {
@@ -548,9 +626,10 @@
         var matchesGenre = !selectedGenre || movie.genre === selectedGenre;
         var matchesYear = !selectedYear || window.movieService.getMovieYear(movie) === selectedYear;
         var matchesRating = !selectedRating || movie.rating >= selectedRating;
+        var matchesFormat = !selectedFormat || getRentalFormat(movie) === selectedFormat;
         var matchesFavorite = !state.showOnlyFavorites || favoriteService.isFavorite(movie.id);
 
-        return matchesSearch && matchesGenre && matchesYear && matchesRating && matchesFavorite;
+        return matchesSearch && matchesGenre && matchesYear && matchesRating && matchesFormat && matchesFavorite;
       })
       .sort(window.movieService.sortByDateDesc);
   }
@@ -561,6 +640,9 @@
    * @returns {string} El HTML de la card de la película.
    */
   function createMovieCard(movie) {
+    var canRent = isRentalAvailable(movie);
+    var isInCart = cartService && cartService.isInCart(movie.id);
+
     return [
       '<div class="col-12 col-sm-6 col-md-4">',
       '<article class="movie-card" data-format="' + getRentalFormat(movie) + '">',
@@ -597,11 +679,14 @@
       '<div class="movie-actions">',
       '<a class="btn btn-primary app-btn-primary" href="movie-detail.html?id=' + movie.id + '">Ver detalle</a>',
       '<button class="btn app-btn-secondary movie-cart-button ' +
-        (cartService && cartService.isInCart(movie.id) ? "is-in-cart" : "") +
+        (isInCart ? "is-in-cart" : "") +
+        (!canRent ? " is-unavailable" : "") +
         '" type="button" data-cart-id="' +
         movie.id +
+        '" ' +
+        (!canRent ? 'disabled aria-disabled="true"' : "") +
         '">' +
-        (cartService && cartService.isInCart(movie.id) ? "En carrito" : "Agregar al carrito") +
+        (!canRent ? "Agotada" : isInCart ? "En carrito" : "Agregar al carrito") +
         "</button>",
       "</div>",
       "</div>",
@@ -739,10 +824,16 @@
   function renderMovies() {
     var filteredMovies = getFilteredMovies();
     var paginatedMovies = getPaginatedMovies(filteredMovies);
+    var hasFieldFilters = hasActiveFieldFilters();
 
-    SELECTORS.emptyState.innerHTML = state.showOnlyFavorites
+    updateCatalogHeading();
+    toggleFeaturedSections();
+
+    SELECTORS.emptyState.innerHTML = state.showOnlyFavorites && !hasFieldFilters
       ? '<h3>No tienes películas favoritas todavía.</h3><p>Explora el catálogo y guarda las películas que quieras ver después.</p><button class="btn btn-primary app-btn-primary" type="button" data-action="show-full-catalog">Elegir favoritas</button>'
-      : "<h3>No se encontraron peliculas</h3><p>Prueba con otra busqueda o cambia los filtros para ver mas resultados.</p>";
+      : hasActiveFilters()
+        ? '<h3>No encontramos películas con esos filtros.</h3><p>Prueba cambiando la búsqueda o limpiando los filtros.</p><button class="btn btn-primary app-btn-primary" type="button" data-action="clear-filters">Limpiar filtros</button>'
+        : "<h3>No se encontraron peliculas</h3><p>Prueba con otra busqueda o cambia los filtros para ver mas resultados.</p>";
     SELECTORS.moviesGrid.innerHTML = paginatedMovies.map(createMovieCard).join("");
     SELECTORS.emptyState.classList.toggle("d-none", filteredMovies.length > 0);
     updateResultsCounter(filteredMovies.length);
@@ -773,13 +864,31 @@
   function renderCollections() {
     var latestMovies = window.movieService.getLatestMovies(4);
     var topRatedMovies = window.movieService.getTopRatedMovies(4);
-    var favorites = favoriteService.getFavorites();
+    var currentUser = authService && authService.getCurrentUser();
+    var favorites = currentUser ? favoriteService.getFavorites() : [];
     var favoriteMovies = movies.filter(function (movie) {
       return favorites.includes(movie.id);
     });
 
     SELECTORS.latestList.innerHTML = latestMovies.map(createMiniItem).join("");
     SELECTORS.topRatedList.innerHTML = topRatedMovies.map(createMiniItem).join("");
+
+    if (SELECTORS.favoriteShelf) {
+      SELECTORS.favoriteShelf.classList.toggle("d-none", !currentUser);
+    }
+
+    SELECTORS.collectionCards.forEach(function (card) {
+      var isFavoriteShelf = card === SELECTORS.favoriteShelf;
+
+      card.classList.toggle("col-md-6", !currentUser && !isFavoriteShelf);
+      card.classList.toggle("col-md-4", Boolean(currentUser || isFavoriteShelf));
+    });
+
+    if (!currentUser) {
+      SELECTORS.favoritesList.innerHTML = "";
+      return;
+    }
+
     SELECTORS.favoritesList.innerHTML = favoriteMovies.length
       ? favoriteMovies.map(createMiniItem).join("")
       : '<div class="mini-item"><span class="comment-date">Todavia no agregas favoritas.</span></div>';
@@ -826,7 +935,9 @@
    * Conecta los eventos del buscador y filtros.
    */
   function bindFilterEvents() {
-    [SELECTORS.searchInput, SELECTORS.genreFilter, SELECTORS.yearFilter, SELECTORS.ratingFilter].forEach(function (element) {
+    [SELECTORS.searchInput, SELECTORS.genreFilter, SELECTORS.yearFilter, SELECTORS.ratingFilter, SELECTORS.formatFilter]
+      .filter(Boolean)
+      .forEach(function (element) {
       element.addEventListener("input", function () {
         resetToFirstPage();
         renderMovies();
@@ -984,6 +1095,22 @@
   }
 
   /**
+   * Conecta botones para limpiar filtros.
+   */
+  function bindClearFiltersEvents() {
+    document.addEventListener("click", function (event) {
+      var button = event.target.closest('[data-action="clear-filters"]');
+
+      if (!button) {
+        return;
+      }
+
+      event.preventDefault();
+      clearFilters();
+    });
+  }
+
+  /**
    * Agrupa todos los eventos de la página.
    */
   function bindEvents() {
@@ -994,6 +1121,7 @@
     bindAuthNavEvents();
     bindFavoriteNavEvents();
     bindFullCatalogEvents();
+    bindClearFiltersEvents();
   }
 
   /**

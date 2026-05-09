@@ -67,6 +67,14 @@
 
       <section class="hero-section" id="hero-section" aria-label="Película destacada">
         <div class="hero-overlay"></div>
+        <button
+          class="movie-favorite-toggle hero-favorite-toggle"
+          id="hero-favorite-button"
+          type="button"
+          aria-label="Agregar a favoritas"
+        >
+          ♡
+        </button>
         <div class="container position-relative">
           <div class="row min-vh-100 align-items-center py-5">
             <div class="col-12 col-md-7 col-lg-6">
@@ -80,8 +88,8 @@
                 <a class="btn btn-primary btn-lg app-btn-primary" id="hero-detail-link" href="movie-detail.html">
                   Ver detalle
                 </a>
-                <button class="btn btn-outline-light btn-lg app-btn-secondary" id="hero-favorite-button" type="button">
-                  Agregar a favoritos
+                <button class="btn btn-outline-light btn-lg app-btn-secondary movie-cart-button" id="hero-cart-button" type="button">
+                  Agregar al carrito
                 </button>
               </div>
             </div>
@@ -297,6 +305,7 @@
     <script src="js/services/favorite.service.js"></script>
     <script src="js/services/auth.service.js"></script>
     <script src="js/services/cart.service.js"></script>
+    <script src="js/config/app.config.js"></script>
     <script src="js/services/whatsapp.service.js"></script>
     <script src="js/pages/home.page.js"></script>
     <script src="js/core/cart.modal.js"></script>

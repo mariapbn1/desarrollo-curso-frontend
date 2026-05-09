@@ -34,6 +34,7 @@
     heroMeta: document.getElementById("hero-meta"),
     heroDetailLink: document.getElementById("hero-detail-link"),
     heroFavoriteButton: document.getElementById("hero-favorite-button"),
+    heroCartButton: document.getElementById("hero-cart-button"),
     searchInput: document.getElementById("search-input"),
     genreFilter: document.getElementById("genre-filter"),
     yearFilter: document.getElementById("year-filter"),
@@ -145,19 +146,6 @@
         (favoriteService.isFavorite(movieId) ? "♥" : "♡") +
         "</button>",
     ].join("");
-  }
-
-  /**
-   * Define el texto del botón destacado de favoritas.
-   * @param {number} movieId - ID de la película.
-   * @returns {string} El texto del botón.
-   */
-  function buildHeroFavoriteButtonLabel(movieId) {
-    if (!authService || !authService.isAuthenticated()) {
-      return "Inicia sesión para guardar";
-    }
-
-    return favoriteService.isFavorite(movieId) ? "Quitar de favoritos" : "Agregar a favoritos";
   }
 
   /**
@@ -402,11 +390,17 @@
    * Carga la película destacada en la parte superior.
    */
   function renderHeroSection() {
+    var canRent;
+    var isInCart;
+
     if (!movies.length) {
       return;
     }
 
     var featuredMovie = window.movieService.getLatestMovies(1)[0];
+    canRent = isRentalAvailable(featuredMovie);
+    isInCart = cartService && cartService.isInCart(featuredMovie.id);
+
     SELECTORS.heroSection.style.backgroundImage = 'url("' + featuredMovie.banner + '")';
     SELECTORS.heroTitle.textContent = featuredMovie.title;
     SELECTORS.heroSynopsis.textContent = featuredMovie.synopsis;
@@ -417,9 +411,17 @@
       window.helpers.createMetaPill(getRentalPriceLabel(featuredMovie) + " / " + getRentalTime(featuredMovie)) +
       window.helpers.createMetaPill(getAvailabilityLabel(featuredMovie));
     SELECTORS.heroDetailLink.href = "movie-detail.html?id=" + featuredMovie.id;
-    SELECTORS.heroFavoriteButton.textContent = buildHeroFavoriteButtonLabel(featuredMovie.id);
-    SELECTORS.heroFavoriteButton.dataset.movieId = featuredMovie.id;
+    SELECTORS.heroFavoriteButton.dataset.favoriteId = featuredMovie.id;
     SELECTORS.heroFavoriteButton.classList.toggle("is-active", favoriteService.isFavorite(featuredMovie.id));
+    SELECTORS.heroFavoriteButton.textContent = favoriteService.isFavorite(featuredMovie.id) ? "♥" : "♡";
+    SELECTORS.heroFavoriteButton.setAttribute("aria-label", buildFavoriteButtonLabel(featuredMovie.id));
+    SELECTORS.heroFavoriteButton.setAttribute("title", buildFavoriteButtonLabel(featuredMovie.id));
+    SELECTORS.heroCartButton.dataset.cartId = featuredMovie.id;
+    SELECTORS.heroCartButton.disabled = !canRent;
+    SELECTORS.heroCartButton.setAttribute("aria-disabled", String(!canRent));
+    SELECTORS.heroCartButton.classList.toggle("is-unavailable", !canRent);
+    SELECTORS.heroCartButton.classList.toggle("is-in-cart", Boolean(canRent && isInCart));
+    SELECTORS.heroCartButton.textContent = !canRent ? "Agotada" : isInCart ? "En carrito" : "Agregar al carrito";
   }
 
   /**
@@ -909,10 +911,6 @@
       button.setAttribute("title", buildFavoriteButtonLabel(movieId));
     });
 
-    if (Number(SELECTORS.heroFavoriteButton.dataset.movieId) === movieId) {
-      SELECTORS.heroFavoriteButton.classList.toggle("is-active", isActive);
-      SELECTORS.heroFavoriteButton.textContent = buildHeroFavoriteButtonLabel(movieId);
-    }
   }
 
   /**
@@ -963,10 +961,6 @@
       event.preventDefault();
       event.stopPropagation();
       handleFavoriteToggle(Number(favoriteButton.dataset.favoriteId));
-    });
-
-    SELECTORS.heroFavoriteButton.addEventListener("click", function () {
-      handleFavoriteToggle(Number(SELECTORS.heroFavoriteButton.dataset.movieId));
     });
   }
 

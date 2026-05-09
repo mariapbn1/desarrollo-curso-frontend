@@ -2,26 +2,43 @@
  * Servicio de contacto por WhatsApp.
  */
 (function () {
-  var PHONE_NUMBER = "573105841049";
+  var CONFIG_WARNING = "Falta configurar el número de WhatsApp en js/config/app.config.js";
   var CONTACT_MESSAGE = "Hola, quería hacer una consulta sobre una película de MAPA VIDEO CLUB.";
   var SELECTORS = {
     modal: document.querySelector("[data-whatsapp-modal]"),
     dialog: document.querySelector(".whatsapp-modal__dialog"),
   };
 
+  function getWhatsappPhone() {
+    return window.APP_CONFIG && window.APP_CONFIG.whatsappPhone;
+  }
+
   /**
    * Arma la URL de contacto de WhatsApp.
    * @returns {string} La URL lista para abrir.
    */
   function buildWhatsappUrl() {
-    return "https://wa.me/" + PHONE_NUMBER + "?text=" + encodeURIComponent(CONTACT_MESSAGE);
+    var whatsappPhone = getWhatsappPhone();
+
+    if (!whatsappPhone) {
+      console.warn(CONFIG_WARNING);
+      return "";
+    }
+
+    return "https://wa.me/" + whatsappPhone + "?text=" + encodeURIComponent(CONTACT_MESSAGE);
   }
 
   /**
    * Abre WhatsApp en una pestaña nueva.
    */
   function openWhatsappContact() {
-    window.open(buildWhatsappUrl(), "_blank");
+    var whatsappUrl = buildWhatsappUrl();
+
+    if (!whatsappUrl) {
+      return;
+    }
+
+    window.open(whatsappUrl, "_blank");
   }
 
   /**

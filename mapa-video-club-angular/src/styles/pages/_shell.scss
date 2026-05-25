@@ -1,0 +1,12 @@
+@use "../abstracts/variables" as vars;
+
+.page-shell {
+  min-height: calc(100vh - 6rem);
+  padding: vars.$space-section clamp(1rem, 5vw, 4rem);
+}
+
+.page-shell__content {
+  display: grid;
+  gap: 1rem;
+  max-width: 48rem;
+}

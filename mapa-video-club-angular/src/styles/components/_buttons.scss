@@ -1,0 +1,64 @@
+@use "../abstracts/variables" as vars;
+
+.app-btn-primary,
+.app-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0.85rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    transform vars.$transition-base,
+    background-color vars.$transition-base,
+    border-color vars.$transition-base,
+    color vars.$transition-base,
+    box-shadow vars.$transition-base;
+}
+
+.app-btn-primary {
+  border-color: vars.$color-primary;
+  background: linear-gradient(180deg, rgba(vars.$color-primary-hover, 0.95), rgba(vars.$color-primary, 0.88));
+  color: vars.$color-text;
+  box-shadow:
+    0 0 16px rgba(vars.$color-primary, 0.42),
+    inset 0 0 14px rgba(255, 255, 255, 0.12);
+}
+
+.app-btn-secondary {
+  border-color: rgba(vars.$color-secondary, 0.68);
+  background: rgba(0, 217, 255, 0.04);
+  color: vars.$color-text;
+  box-shadow: inset 0 0 12px rgba(vars.$color-secondary, 0.08);
+}
+
+.app-btn-primary:hover,
+.app-btn-primary:focus-visible,
+.app-btn-secondary:hover,
+.app-btn-secondary:focus-visible {
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.app-btn-primary:hover,
+.app-btn-primary:focus-visible {
+  border-color: vars.$color-primary-hover;
+  background: linear-gradient(180deg, rgba(#ff7aad, 0.98), rgba(vars.$color-primary, 0.92));
+  box-shadow:
+    0 0 24px rgba(vars.$color-primary, 0.62),
+    0 0 34px rgba(vars.$color-accent, 0.18);
+}
+
+.app-btn-secondary:hover,
+.app-btn-secondary:focus-visible {
+  border-color: rgba(vars.$color-secondary, 0.95);
+  box-shadow:
+    0 0 18px rgba(vars.$color-secondary, 0.34),
+    inset 0 0 14px rgba(vars.$color-secondary, 0.12);
+}

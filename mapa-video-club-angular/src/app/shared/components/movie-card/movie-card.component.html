@@ -1,14 +1,19 @@
-<article class="movie-card">
+<article class="movie-card" [attr.data-format]="movie ? 'VHS / Digital' : 'VHS'">
   @if (movie; as currentMovie) {
     <a [routerLink]="['/pelicula', currentMovie.id]">
-      <img [src]="currentMovie.posterUrl" [alt]="currentMovie.title" />
-      <h3>{{ currentMovie.title }}</h3>
-      <p>{{ currentMovie.genre }} · {{ currentMovie.year }}</p>
+      <img class="movie-poster" [src]="currentMovie.posterUrl" [alt]="currentMovie.title" />
+      <div class="movie-card-body">
+        <h3 class="movie-title">{{ currentMovie.title }}</h3>
+        <p class="movie-meta">{{ currentMovie.genre }} / {{ currentMovie.year }}</p>
+      </div>
     </a>
   } @else {
     <div class="movie-card__placeholder">
-      <h3>Pelicula pendiente</h3>
-      <p>La data se migrara en un paso posterior.</p>
+      <img class="movie-poster" src="assets/img/movie-fallback.svg" alt="" />
+      <div class="movie-card-body">
+        <h3 class="movie-title">Pelicula pendiente</h3>
+        <p class="movie-description">La data se migrara en un paso posterior.</p>
+      </div>
     </div>
   }
 </article>

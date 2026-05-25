@@ -1,0 +1,47 @@
+$color-bg: #030512;
+$color-surface: rgba(8, 12, 32, 0.9);
+$color-surface-strong: #090d22;
+$color-primary: #ff2f6d;
+$color-primary-hover: #ff5a91;
+$color-secondary: #00d9ff;
+$color-accent: #9d4dff;
+$color-text: #f8fbff;
+$color-muted: #9aa7c7;
+$color-border: rgba(0, 217, 255, 0.22);
+$color-danger: #ff3f6c;
+$color-success: #38f58b;
+
+$shadow-soft: 0 0 36px rgba(255, 47, 109, 0.16), 0 24px 70px rgba(0, 0, 0, 0.42);
+$shadow-card: 0 0 24px rgba(0, 217, 255, 0.1), 0 18px 40px rgba(0, 0, 0, 0.5);
+
+$radius-lg: 1.5rem;
+$radius-md: 1rem;
+$radius-sm: 0.75rem;
+
+$font-base: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+$transition-base: 220ms ease;
+$space-section: clamp(4rem, 6vw, 6rem);
+$space-card: 1.5rem;
+
+:root {
+  --color-bg: #{$color-bg};
+  --color-surface: #{$color-surface};
+  --color-surface-strong: #{$color-surface-strong};
+  --color-primary: #{$color-primary};
+  --color-primary-hover: #{$color-primary-hover};
+  --color-secondary: #{$color-secondary};
+  --color-accent: #{$color-accent};
+  --color-text: #{$color-text};
+  --color-muted: #{$color-muted};
+  --color-border: #{$color-border};
+  --color-danger: #{$color-danger};
+  --color-success: #{$color-success};
+  --shadow-soft: #{$shadow-soft};
+  --shadow-card: #{$shadow-card};
+  --radius-lg: #{$radius-lg};
+  --radius-md: #{$radius-md};
+  --radius-sm: #{$radius-sm};
+  --transition-base: #{$transition-base};
+  --space-section: #{$space-section};
+  --space-card: #{$space-card};
+}

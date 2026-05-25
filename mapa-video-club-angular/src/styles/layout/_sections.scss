@@ -1,0 +1,29 @@
+@use "../abstracts/variables" as vars;
+
+.filter-section,
+.collection-section,
+.page-section {
+  padding: vars.$space-section clamp(1rem, 5vw, 4rem);
+}
+
+.filters-panel,
+.collection-card,
+.content-panel {
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  border: 1px solid vars.$color-border;
+  border-radius: vars.$radius-lg;
+  background:
+    linear-gradient(180deg, rgba(14, 18, 44, 0.94), rgba(5, 8, 24, 0.92)),
+    vars.$color-surface;
+  box-shadow: vars.$shadow-soft;
+  backdrop-filter: blur(20px);
+}
+
+.empty-state {
+  padding: 2rem;
+  border: 1px dashed rgba(vars.$color-secondary, 0.28);
+  border-radius: vars.$radius-lg;
+  background: rgba(vars.$color-secondary, 0.04);
+  color: vars.$color-muted;
+  text-align: center;
+}

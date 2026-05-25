@@ -1,0 +1,112 @@
+@use "../abstracts/variables" as vars;
+
+.app-navbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem clamp(1rem, 4vw, 1.5rem);
+  border-bottom: 1px solid rgba(vars.$color-primary, 0.72);
+  background: linear-gradient(180deg, rgba(#030512, 0.98), rgba(#05071a, 0.9));
+  box-shadow:
+    0 0 18px rgba(vars.$color-primary, 0.28),
+    0 0 28px rgba(vars.$color-secondary, 0.12);
+  backdrop-filter: blur(18px);
+}
+
+.brand-mark {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.brand-logo {
+  width: clamp(10.5rem, 18vw, 14rem);
+  height: 4.5rem;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 7px rgba(vars.$color-primary, 0.42))
+    drop-shadow(0 0 12px rgba(vars.$color-secondary, 0.22));
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+}
+
+.nav-text-link {
+  color: vars.$color-muted;
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    color vars.$transition-base,
+    text-shadow vars.$transition-base;
+}
+
+.nav-text-link:hover,
+.nav-text-link:focus-visible,
+.nav-text-link.is-active {
+  color: vars.$color-text;
+  text-shadow: 0 0 12px rgba(vars.$color-secondary, 0.36);
+}
+
+.nav-icon-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 0;
+  background: transparent;
+  color: vars.$color-text;
+  transition:
+    filter vars.$transition-base,
+    transform vars.$transition-base;
+}
+
+.nav-icon-link:hover,
+.nav-icon-link:focus-visible,
+.nav-icon-link.is-active {
+  filter: brightness(1.12);
+  outline: none;
+  transform: translateY(-1px) scale(1.06);
+}
+
+.nav-icon-img {
+  width: 2.25rem;
+  height: 2.25rem;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 0 8px rgba(vars.$color-primary, 0.46))
+    drop-shadow(0 0 12px rgba(vars.$color-secondary, 0.28));
+}
+
+@media (max-width: 767.98px) {
+  .brand-logo {
+    width: 9.5rem;
+    height: 3.5rem;
+  }
+
+  .navbar-actions {
+    gap: 0.35rem;
+  }
+
+  .nav-text-link {
+    display: none;
+  }
+
+  .nav-icon-img {
+    width: 1.85rem;
+    height: 1.85rem;
+  }
+}

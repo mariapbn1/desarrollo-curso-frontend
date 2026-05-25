@@ -1,8 +1,10 @@
 <app-navbar />
 
-<main class="page">
-  <a routerLink="/">Volver al inicio</a>
-  <h1>Detalle de pelicula</h1>
-  <p>ID recibido: {{ movieId }}</p>
-  <p>El detalle completo se migrara en un paso posterior.</p>
+<main class="page-shell">
+  <div class="page-shell__content content-panel">
+    <a class="app-btn-secondary" routerLink="/">Volver al inicio</a>
+    <h1 class="page-title">Detalle de pelicula</h1>
+    <p class="page-copy">ID recibido: {{ movieId }}</p>
+    <p class="page-copy">El detalle completo se migrara en un paso posterior.</p>
+  </div>
 </main>

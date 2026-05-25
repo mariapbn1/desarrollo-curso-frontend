@@ -1,11 +1,21 @@
-<nav class="navbar" aria-label="Principal">
-  <a class="navbar__brand" routerLink="/">MAPA VIDEO CLUB</a>
+<nav class="app-navbar" aria-label="Principal">
+  <a class="brand-mark" routerLink="/" aria-label="Ir al inicio">
+    <img class="brand-logo" src="assets/img/logo-mapa-video-club.png" alt="MAPA VIDEO CLUB" />
+  </a>
 
-  <div class="navbar__links">
-    <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+  <div class="navbar-actions">
+    <a class="nav-text-link" routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
       Inicio
     </a>
-    <a routerLink="/contacto" routerLinkActive="is-active">Contacto</a>
-    <a routerLink="/auth" routerLinkActive="is-active">Acceso</a>
+    <a class="nav-text-link" routerLink="/contacto" routerLinkActive="is-active">Contacto</a>
+    <a class="nav-icon-link" routerLink="/" aria-label="Favoritos">
+      <img class="nav-icon-img" src="assets/img/icons/icon-favorite-neon.png" alt="Favoritos" />
+    </a>
+    <button class="nav-icon-link" type="button" aria-label="Carrito">
+      <img class="nav-icon-img" src="assets/img/icons/icon-cart-neon.png" alt="Carrito" />
+    </button>
+    <a class="nav-icon-link" routerLink="/auth" routerLinkActive="is-active" aria-label="Usuario">
+      <img class="nav-icon-img" src="assets/img/icons/icon-user-neon.png" alt="Usuario" />
+    </a>
   </div>
 </nav>

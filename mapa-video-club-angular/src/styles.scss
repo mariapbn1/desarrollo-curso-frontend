@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+@use "styles/abstracts/variables";
+
+@use "styles/base/reset";
+@use "styles/base/typography";
+@use "styles/base/global";
+
+@use "styles/layout/navbar";
+@use "styles/layout/hero";
+@use "styles/layout/sections";
+
+@use "styles/components/buttons";
+@use "styles/components/cards";
+@use "styles/components/whatsapp";
+
+@use "styles/pages/shell";

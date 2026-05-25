@@ -19,6 +19,20 @@
         <div class="hero-actions">
           <a class="app-btn-primary" [routerLink]="['/pelicula', featuredMovie.id]">Ver detalle</a>
           <button class="app-btn-secondary" type="button">Agregar al carrito</button>
+          <button
+            class="hero-favorite"
+            type="button"
+            [class.is-active]="isFavorite(featuredMovie.id)"
+            [attr.aria-pressed]="isFavorite(featuredMovie.id)"
+            [attr.aria-label]="isFavorite(featuredMovie.id) ? 'Quitar de favoritas' : 'Agregar a favoritas'"
+            (click)="toggleFavorite(featuredMovie.id)"
+          >
+            @if (isFavorite(featuredMovie.id)) {
+              <span aria-hidden="true">&#9829;</span>
+            } @else {
+              <span aria-hidden="true">&#9825;</span>
+            }
+          </button>
         </div>
       } @else {
         <p class="hero-kicker">Catalogo</p>

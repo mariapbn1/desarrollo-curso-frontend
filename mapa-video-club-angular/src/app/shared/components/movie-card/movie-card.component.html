@@ -1,6 +1,19 @@
 <article class="movie-card" [attr.data-format]="movie?.format || 'VHS'">
   @if (movie; as currentMovie) {
-    <button class="movie-favorite-toggle" type="button" aria-label="Agregar a favoritas">♡</button>
+    <button
+      class="movie-favorite-toggle"
+      type="button"
+      [class.is-active]="isFavorite(currentMovie.id)"
+      [attr.aria-pressed]="isFavorite(currentMovie.id)"
+      [attr.aria-label]="isFavorite(currentMovie.id) ? 'Quitar de favoritas' : 'Agregar a favoritas'"
+      (click)="toggleFavorite(currentMovie.id, $event)"
+    >
+      @if (isFavorite(currentMovie.id)) {
+        <span aria-hidden="true">&#9829;</span>
+      } @else {
+        <span aria-hidden="true">&#9825;</span>
+      }
+    </button>
     <img
       class="movie-poster"
       [src]="currentMovie.poster || currentMovie.fallback"

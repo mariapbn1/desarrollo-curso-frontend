@@ -9,3 +9,13 @@
   grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
   margin-top: 1.5rem;
 }
+
+.home-catalog__empty {
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+}
+
+.home-catalog__empty p {
+  margin: 0;
+}

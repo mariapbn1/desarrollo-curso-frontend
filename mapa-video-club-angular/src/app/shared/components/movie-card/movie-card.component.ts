@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, Input, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
+import { FavoriteService } from '../../../core/services/favorite.service';
 import { Movie } from '../../../models/movie.model';
 
 @Component({
@@ -10,7 +11,25 @@ import { Movie } from '../../../models/movie.model';
   styleUrl: './movie-card.component.scss',
 })
 export class MovieCardComponent {
+  private readonly favoriteService = inject(FavoriteService);
+  private readonly router = inject(Router);
+
   @Input() movie?: Movie;
+
+  isFavorite(movieId: number): boolean {
+    return this.favoriteService.isFavorite(movieId);
+  }
+
+  toggleFavorite(movieId: number, event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const result = this.favoriteService.toggleFavorite(movieId);
+
+    if (!result.success) {
+      this.router.navigateByUrl('/auth');
+    }
+  }
 
   formatPrice(price: number): string {
     return new Intl.NumberFormat('es-CO', {

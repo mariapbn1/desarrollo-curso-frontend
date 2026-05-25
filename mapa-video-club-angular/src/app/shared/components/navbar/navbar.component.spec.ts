@@ -36,6 +36,7 @@ describe('NavbarComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     expect(compiled.textContent).toContain('Ingresar');
+    expect(compiled.querySelector('[aria-label="Favoritos"]')).toBeNull();
   });
 
   it('should show active user and logout', async () => {
@@ -51,6 +52,7 @@ describe('NavbarComponent', () => {
 
     let compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Hola, Laura');
+    expect(compiled.querySelector('[aria-label="Favoritos"]')).toBeTruthy();
 
     component.logout();
     fixture.detectChanges();

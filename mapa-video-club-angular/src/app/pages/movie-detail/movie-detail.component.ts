@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { FavoriteService } from '../../core/services/favorite.service';
 import { MovieService } from '../../core/services/movie.service';
 import { Movie } from '../../models/movie.model';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
@@ -18,9 +19,23 @@ export class MovieDetailComponent {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly movieService: MovieService,
+    private readonly favoriteService: FavoriteService,
+    private readonly router: Router,
   ) {
     this.movieId = this.route.snapshot.paramMap.get('id') ?? '';
     this.movie = this.movieService.getMovieById(this.movieId);
+  }
+
+  isFavorite(movieId: number): boolean {
+    return this.favoriteService.isFavorite(movieId);
+  }
+
+  toggleFavorite(movieId: number): void {
+    const result = this.favoriteService.toggleFavorite(movieId);
+
+    if (!result.success) {
+      this.router.navigateByUrl('/auth');
+    }
   }
 
   formatPrice(price: number): string {

@@ -8,9 +8,11 @@
       Inicio
     </a>
     <a class="nav-text-link" routerLink="/contacto" routerLinkActive="is-active">Contacto</a>
-    <a class="nav-icon-link" routerLink="/" aria-label="Favoritos">
-      <img class="nav-icon-img" src="assets/img/icons/icon-favorite-neon.png" alt="Favoritos" />
-    </a>
+    @if (currentUser()) {
+      <a class="nav-icon-link" routerLink="/" [queryParams]="{ view: 'favorites' }" aria-label="Favoritos">
+        <img class="nav-icon-img" src="assets/img/icons/icon-favorite-neon.png" alt="Favoritos" />
+      </a>
+    }
     <button class="nav-icon-link" type="button" aria-label="Carrito">
       <img class="nav-icon-img" src="assets/img/icons/icon-cart-neon.png" alt="Carrito" />
     </button>

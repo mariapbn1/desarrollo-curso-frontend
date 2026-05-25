@@ -1,29 +1,38 @@
 <app-navbar />
 
 <main>
-  <app-hero [movie]="featuredMovie" />
-  <app-filters-bar
-    [genres]="genres"
-    [years]="years"
-    [formats]="formats"
-    (filtersChange)="onFiltersChange($event)"
-  />
-  <app-featured-shelves
-    [latestMovies]="latestMovies"
-    [topRentalMovies]="topRentalMovies"
-    [popularMovies]="popularMovies"
-  />
+  @if (!showFavoritesView()) {
+    <app-hero [movie]="featuredMovie" />
+    <app-filters-bar
+      [genres]="genres"
+      [years]="years"
+      [formats]="formats"
+      (filtersChange)="onFiltersChange($event)"
+    />
+    <app-featured-shelves
+      [latestMovies]="latestMovies"
+      [topRentalMovies]="topRentalMovies"
+      [popularMovies]="popularMovies"
+      [favoriteMovies]="favoriteMovies()"
+      [hasActiveUser]="currentUser() !== null"
+    />
+  }
 
   <section class="collection-section home-catalog" id="catalogo">
     <div class="collection-card">
-      <span class="section-tag">Catalogo</span>
-      <h2 class="section-title">Todas las peliculas</h2>
+      <span class="section-tag">{{ showFavoritesView() ? 'Favoritas' : 'Catalogo' }}</span>
+      <h2 class="section-title">{{ showFavoritesView() ? 'Tus favoritas' : 'Todas las peliculas' }}</h2>
 
-      @if (catalogMovies().length > 0) {
+      @if (visibleCatalogMovies().length > 0) {
         <div class="home-catalog__grid">
-          @for (movie of catalogMovies(); track movie.id) {
+          @for (movie of visibleCatalogMovies(); track movie.id) {
             <app-movie-card [movie]="movie" />
           }
+        </div>
+      } @else if (showFavoritesView()) {
+        <div class="empty-state home-catalog__empty">
+          <p>No tienes pel&iacute;culas favoritas todav&iacute;a.</p>
+          <a class="app-btn-primary" routerLink="/">Ver cat&aacute;logo completo</a>
         </div>
       } @else {
         <div class="empty-state">No encontramos peliculas con esos filtros.</div>

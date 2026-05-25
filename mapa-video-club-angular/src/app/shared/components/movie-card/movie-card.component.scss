@@ -28,6 +28,13 @@
   text-shadow: 0 0 12px rgba(255, 47, 109, 0.3);
 }
 
+.movie-favorite-toggle.is-active {
+  border-color: rgba(255, 47, 109, 0.92);
+  background: rgba(255, 47, 109, 0.2);
+  color: var(--color-primary-hover);
+  box-shadow: 0 0 18px rgba(255, 47, 109, 0.42);
+}
+
 .movie-card-body {
   display: flex;
   flex: 1;

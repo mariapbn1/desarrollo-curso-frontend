@@ -58,6 +58,33 @@ describe('HomeComponent', () => {
     expect(component.featuredMovie).toBeTruthy();
   });
 
+  it('should show only filtered results when filters are active', async () => {
+    await setup();
+
+    component.onFiltersChange({ search: 'michael' });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.hasActiveFilters()).toBe(true);
+    expect(component.catalogTitle()).toBe('Resultados filtrados');
+    expect(component.visibleCatalogMovies().map((movie) => movie.title)).toEqual(['Michael']);
+    expect(fixture.nativeElement.textContent).not.toContain('Recien llegadas');
+  });
+
+  it('should restore normal catalog when filters are cleared', async () => {
+    await setup();
+
+    component.onFiltersChange({ search: 'michael' });
+    component.onFiltersChange({});
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.hasActiveFilters()).toBe(false);
+    expect(component.catalogTitle()).toBe('Todas las peliculas');
+    expect(component.visibleCatalogMovies().length).toBe(MOVIES.length);
+    expect(fixture.nativeElement.textContent).toContain('Recien llegadas');
+  });
+
   it('should show only favorite movies in favorites view with active user', async () => {
     await setup({ view: 'favorites' });
     authService.setCurrentUser({ id: '1', name: 'Laura', email: 'laura@mail.com' });

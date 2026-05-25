@@ -66,6 +66,14 @@
     drop-shadow(0 0 24px rgba(vars.$color-secondary, 0.18));
 }
 
+.home-page .hero-section {
+  min-height: clamp(30rem, 64vh, 38rem);
+}
+
+.home-page .hero-shell {
+  padding-block: clamp(1.75rem, 4vw, 3.25rem);
+}
+
 @media (min-width: 900px) {
   .hero-shell {
     grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.65fr);
@@ -75,5 +83,13 @@
 @media (max-width: 767.98px) {
   .hero-section {
     min-height: calc(100vh - 5.25rem);
+  }
+
+  .home-page .hero-section {
+    min-height: auto;
+  }
+
+  .home-page .hero-shell {
+    padding-block: 1.5rem;
   }
 }

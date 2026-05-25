@@ -2,15 +2,20 @@
   <div class="filters-panel">
     <span class="section-tag">Filtros</span>
 
-    <form class="filters-grid" (reset)="clearFilters()">
+    <form class="filters-grid">
       <label>
         <span>Buscar</span>
-        <input type="search" placeholder="Titulo, actor o tag" (input)="updateFilter('search', $event)" />
+        <input
+          type="search"
+          placeholder="Titulo"
+          [value]="filters.search ?? ''"
+          (input)="updateFilter('search', $event)"
+        />
       </label>
 
       <label>
         <span>Genero</span>
-        <select (change)="updateFilter('genre', $event)">
+        <select [value]="filters.genre ?? ''" (change)="updateFilter('genre', $event)">
           <option value="">Todos</option>
           @for (genre of genres; track genre) {
             <option [value]="genre">{{ genre }}</option>
@@ -20,7 +25,7 @@
 
       <label>
         <span>Anio</span>
-        <select (change)="updateFilter('year', $event)">
+        <select [value]="filters.year ?? ''" (change)="updateFilter('year', $event)">
           <option value="">Todos</option>
           @for (year of years; track year) {
             <option [value]="year">{{ year }}</option>
@@ -30,7 +35,7 @@
 
       <label>
         <span>Rating</span>
-        <select (change)="updateFilter('rating', $event)">
+        <select [value]="filters.rating ?? ''" (change)="updateFilter('rating', $event)">
           <option value="">Todos</option>
           <option value="8">8+</option>
           <option value="7">7+</option>
@@ -40,7 +45,7 @@
 
       <label>
         <span>Formato</span>
-        <select (change)="updateFilter('format', $event)">
+        <select [value]="filters.format ?? ''" (change)="updateFilter('format', $event)">
           <option value="">Todos</option>
           @for (format of formats; track format) {
             <option [value]="format">{{ format }}</option>
@@ -48,7 +53,7 @@
         </select>
       </label>
 
-      <button class="app-btn-secondary" type="reset">Limpiar</button>
+      <button class="app-btn-secondary" type="button" (click)="clearFilters()">Limpiar</button>
     </form>
   </div>
 </section>

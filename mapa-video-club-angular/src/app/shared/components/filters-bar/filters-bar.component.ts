@@ -14,7 +14,7 @@ export class FiltersBarComponent {
   @Input() formats: readonly string[] = [];
   @Output() readonly filtersChange = new EventEmitter<MovieFilters>();
 
-  private filters: MovieFilters = {};
+  filters: MovieFilters = {};
 
   updateFilter(filterName: keyof MovieFilters, event: Event): void {
     const target = event.target as HTMLInputElement | HTMLSelectElement;
@@ -24,11 +24,11 @@ export class FiltersBarComponent {
       ...this.filters,
       [filterName]: value || undefined,
     };
-    this.filtersChange.emit(this.filters);
+    this.filtersChange.emit({ ...this.filters });
   }
 
   clearFilters(): void {
     this.filters = {};
-    this.filtersChange.emit(this.filters);
+    this.filtersChange.emit({});
   }
 }

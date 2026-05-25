@@ -1,6 +1,6 @@
 <app-navbar />
 
-<main>
+<main class="home-page" [class.has-active-filters]="hasActiveFilters()" [class.is-favorites-view]="showFavoritesView()">
   @if (!showFavoritesView()) {
     <app-hero [movie]="featuredMovie" />
     <app-filters-bar
@@ -9,19 +9,21 @@
       [formats]="formats"
       (filtersChange)="onFiltersChange($event)"
     />
-    <app-featured-shelves
-      [latestMovies]="latestMovies"
-      [topRentalMovies]="topRentalMovies"
-      [popularMovies]="popularMovies"
-      [favoriteMovies]="favoriteMovies()"
-      [hasActiveUser]="currentUser() !== null"
-    />
+    @if (!hasActiveFilters()) {
+      <app-featured-shelves
+        [latestMovies]="latestMovies"
+        [topRentalMovies]="topRentalMovies"
+        [popularMovies]="popularMovies"
+        [favoriteMovies]="favoriteMovies()"
+        [hasActiveUser]="currentUser() !== null"
+      />
+    }
   }
 
   <section class="collection-section home-catalog" id="catalogo">
     <div class="collection-card">
-      <span class="section-tag">{{ showFavoritesView() ? 'Favoritas' : 'Catalogo' }}</span>
-      <h2 class="section-title">{{ showFavoritesView() ? 'Tus favoritas' : 'Todas las peliculas' }}</h2>
+      <span class="section-tag">{{ catalogTag() }}</span>
+      <h2 class="section-title">{{ catalogTitle() }}</h2>
 
       @if (visibleCatalogMovies().length > 0) {
         <div class="home-catalog__grid">

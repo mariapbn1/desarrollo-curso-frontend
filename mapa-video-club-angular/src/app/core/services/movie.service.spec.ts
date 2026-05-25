@@ -56,6 +56,12 @@ describe('MovieService', () => {
     expect(filteredMovies.some((movie) => movie.title === 'Dune: Part Two')).toBe(true);
   });
 
+  it('should filter search by title only', () => {
+    const filteredMovies = service.filterMovies({ search: 'michael' });
+
+    expect(filteredMovies.map((movie) => movie.title)).toEqual(['Michael']);
+  });
+
   it('should filter movies by genre', () => {
     const filteredMovies = service.filterMovies({ genre: 'Accion' });
 

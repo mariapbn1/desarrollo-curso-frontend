@@ -85,15 +85,7 @@ export class MovieService {
   }
 
   private getSearchableText(movie: Movie): string {
-    return this.normalizeText([
-      movie.title,
-      movie.genre,
-      movie.synopsis,
-      movie.review,
-      movie.format,
-      ...movie.actors,
-      ...movie.tags,
-    ].join(' '));
+    return this.normalizeText(movie.title);
   }
 
   private normalizeLimit(limit: number): number {

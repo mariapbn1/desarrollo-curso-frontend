@@ -1,12 +1,48 @@
 <article class="movie-card" [attr.data-format]="movie?.format || 'VHS'">
   @if (movie; as currentMovie) {
-    <a [routerLink]="['/pelicula', currentMovie.id]">
-      <img class="movie-poster" [src]="currentMovie.poster" [alt]="currentMovie.title" />
-      <div class="movie-card-body">
+    <button class="movie-favorite-toggle" type="button" aria-label="Agregar a favoritas">♡</button>
+    <img
+      class="movie-poster"
+      [src]="currentMovie.poster || currentMovie.fallback"
+      [alt]="currentMovie.title"
+      (error)="handleImageError($event, currentMovie.fallback)"
+    />
+
+    <div class="movie-card-body">
+      <div class="movie-card-content">
         <h3 class="movie-title">{{ currentMovie.title }}</h3>
-        <p class="movie-meta">{{ currentMovie.genre }} / {{ currentMovie.year }}</p>
+        <div class="movie-meta">
+          <div class="movie-genre">{{ currentMovie.genre }}</div>
+          <div class="movie-info-row">
+            <span>{{ currentMovie.year }}</span>
+            <span class="movie-rating">{{ currentMovie.rating.toFixed(1) }}</span>
+          </div>
+        </div>
+        <p class="movie-description">{{ currentMovie.synopsis }}</p>
       </div>
-    </a>
+
+      <div class="movie-rental">
+        <div class="movie-rental-price">
+          <span>{{ formatPrice(currentMovie.rentalPrice) }}</span> / {{ currentMovie.rentalTime }}
+        </div>
+        <div class="movie-rental-meta">
+          <span class="rental-badge rental-format">{{ currentMovie.format }}</span>
+          <span class="rental-badge" [class.is-unavailable]="!currentMovie.available">
+            {{ getAvailabilityLabel(currentMovie) }}
+          </span>
+        </div>
+        <div class="rental-tags">
+          @for (tag of currentMovie.tags; track tag) {
+            <span>{{ tag }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="movie-actions">
+        <a class="app-btn-primary" [routerLink]="['/pelicula', currentMovie.id]">Ver detalle</a>
+        <button class="app-btn-secondary movie-cart-button" type="button">Agregar al carrito</button>
+      </div>
+    </div>
   } @else {
     <div class="movie-card__placeholder">
       <img class="movie-poster" src="assets/img/movie-fallback.svg" alt="" />

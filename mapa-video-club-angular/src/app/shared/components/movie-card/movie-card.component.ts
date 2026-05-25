@@ -11,4 +11,24 @@ import { Movie } from '../../../models/movie.model';
 })
 export class MovieCardComponent {
   @Input() movie?: Movie;
+
+  formatPrice(price: number): string {
+    return new Intl.NumberFormat('es-CO', {
+      currency: 'COP',
+      maximumFractionDigits: 0,
+      style: 'currency',
+    }).format(price);
+  }
+
+  getAvailabilityLabel(movie: Movie): string {
+    return movie.available && movie.stock > 0 ? 'Disponible' : 'Agotada';
+  }
+
+  handleImageError(event: Event, fallback: string): void {
+    const image = event.target as HTMLImageElement;
+
+    if (!image.src.endsWith(fallback)) {
+      image.src = fallback;
+    }
+  }
 }

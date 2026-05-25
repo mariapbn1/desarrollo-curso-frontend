@@ -1,9 +1,35 @@
 <app-navbar />
 
 <main>
-  <app-hero />
-  <app-filters-bar />
-  <app-featured-shelves />
+  <app-hero [movie]="featuredMovie" />
+  <app-filters-bar
+    [genres]="genres"
+    [years]="years"
+    [formats]="formats"
+    (filtersChange)="onFiltersChange($event)"
+  />
+  <app-featured-shelves
+    [latestMovies]="latestMovies"
+    [topRentalMovies]="topRentalMovies"
+    [popularMovies]="popularMovies"
+  />
+
+  <section class="collection-section home-catalog" id="catalogo">
+    <div class="collection-card">
+      <span class="section-tag">Catalogo</span>
+      <h2 class="section-title">Todas las peliculas</h2>
+
+      @if (catalogMovies().length > 0) {
+        <div class="home-catalog__grid">
+          @for (movie of catalogMovies(); track movie.id) {
+            <app-movie-card [movie]="movie" />
+          }
+        </div>
+      } @else {
+        <div class="empty-state">No encontramos peliculas con esos filtros.</div>
+      }
+    </div>
+  </section>
 </main>
 
 <app-whatsapp-button />

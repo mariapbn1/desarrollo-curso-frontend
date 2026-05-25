@@ -1,18 +1,34 @@
-<section class="hero-section">
+<section class="hero-section" [style.background-image]="movie ? 'url(' + movie.banner + ')' : null">
   <div class="hero-overlay"></div>
 
   <div class="hero-shell">
     <div class="hero-content">
-      <p class="hero-kicker">Catalogo en migracion</p>
-      <h1 class="hero-title">MAPA VIDEO CLUB</h1>
-      <p class="hero-text">Base Angular lista para migrar la experiencia original con identidad retro/neon.</p>
-      <div>
-        <a class="app-btn-primary" routerLink="/contacto">Contacto</a>
-      </div>
+      @if (movie; as featuredMovie) {
+        <p class="hero-kicker">Pelicula destacada</p>
+        <h1 class="hero-title">{{ featuredMovie.title }}</h1>
+        <p class="hero-text">{{ featuredMovie.synopsis }}</p>
+
+        <div class="hero-meta">
+          <span>{{ featuredMovie.genre }}</span>
+          <span>{{ featuredMovie.releaseDate }}</span>
+          <span>Calificacion {{ featuredMovie.rating.toFixed(1) }}</span>
+          <span>{{ formatPrice(featuredMovie.rentalPrice) }} / {{ featuredMovie.rentalTime }}</span>
+          <span [class.is-unavailable]="!featuredMovie.available">{{ getAvailabilityLabel(featuredMovie) }}</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="app-btn-primary" [routerLink]="['/pelicula', featuredMovie.id]">Ver detalle</a>
+          <button class="app-btn-secondary" type="button">Agregar al carrito</button>
+        </div>
+      } @else {
+        <p class="hero-kicker">Catalogo</p>
+        <h1 class="hero-title">MAPA VIDEO CLUB</h1>
+        <p class="hero-text">Base Angular lista para migrar la experiencia original con identidad retro/neon.</p>
+      }
     </div>
 
     <div class="hero-brand-card" aria-hidden="true">
-      <img src="assets/img/logo-m.png" alt="" />
+      <img [src]="movie?.poster || 'assets/img/logo-m.png'" alt="" />
     </div>
   </div>
 </section>

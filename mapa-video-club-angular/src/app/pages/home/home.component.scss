@@ -2,3 +2,10 @@
   display: block;
   min-height: 100vh;
 }
+
+.home-catalog__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  margin-top: 1.5rem;
+}

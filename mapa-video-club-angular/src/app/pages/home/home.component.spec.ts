@@ -21,4 +21,9 @@ describe('HomeComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should load catalog movies from MovieService', () => {
+    expect(component.catalogMovies().length).toBeGreaterThan(0);
+    expect(component.featuredMovie).toBeTruthy();
+  });
 });

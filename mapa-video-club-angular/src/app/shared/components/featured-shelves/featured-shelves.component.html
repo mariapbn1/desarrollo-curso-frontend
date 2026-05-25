@@ -1,3 +1,5 @@
 <section class="featured-shelves">
-  <app-movie-carousel title="Peliculas destacadas" />
+  <app-movie-carousel title="Recien llegadas" [movies]="latestMovies" />
+  <app-movie-carousel title="Top rentas" [movies]="topRentalMovies" />
+  <app-movie-carousel title="Mas populares" [movies]="popularMovies" />
 </section>

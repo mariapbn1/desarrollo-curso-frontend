@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
+import { Movie } from '../../../models/movie.model';
 import { MovieCarouselComponent } from '../movie-carousel/movie-carousel.component';
 
 @Component({
@@ -8,4 +9,8 @@ import { MovieCarouselComponent } from '../movie-carousel/movie-carousel.compone
   templateUrl: './featured-shelves.component.html',
   styleUrl: './featured-shelves.component.scss',
 })
-export class FeaturedShelvesComponent {}
+export class FeaturedShelvesComponent {
+  @Input() latestMovies: readonly Movie[] = [];
+  @Input() topRentalMovies: readonly Movie[] = [];
+  @Input() popularMovies: readonly Movie[] = [];
+}

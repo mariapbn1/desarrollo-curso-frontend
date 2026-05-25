@@ -61,4 +61,12 @@ export class HeroComponent {
   getAvailabilityLabel(movie: Movie): string {
     return movie.available && movie.stock > 0 ? `${movie.stock} disponibles` : 'Agotada';
   }
+
+  handleImageError(event: Event, fallback: string): void {
+    const image = event.target as HTMLImageElement;
+
+    if (!image.src.endsWith(fallback)) {
+      image.src = fallback;
+    }
+  }
 }

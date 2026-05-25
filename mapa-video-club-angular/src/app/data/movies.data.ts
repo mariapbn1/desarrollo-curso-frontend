@@ -2,13 +2,198 @@ import type { Movie } from '../models/movie.model';
 
 export const MOVIE_IMAGE_FALLBACK = 'assets/img/movie-fallback.svg';
 
-const withLocalImages = (movie: Omit<Movie, 'poster' | 'banner' | 'photos' | 'fallback'>): Movie => ({
-  ...movie,
-  poster: MOVIE_IMAGE_FALLBACK,
-  banner: MOVIE_IMAGE_FALLBACK,
-  photos: [MOVIE_IMAGE_FALLBACK, MOVIE_IMAGE_FALLBACK, MOVIE_IMAGE_FALLBACK],
-  fallback: MOVIE_IMAGE_FALLBACK,
-});
+type MovieImages = Pick<Movie, 'poster' | 'banner' | 'photos'>;
+
+const buildTmdbImage = (path: string): string => `https://image.tmdb.org/t/p/original${path}`;
+const buildWikiImage = (path: string): string => `https://upload.wikimedia.org${path}`;
+
+const createGallery = (posterPath: string, bannerPath: string): string[] => [
+  buildTmdbImage(bannerPath),
+  buildTmdbImage(posterPath),
+  buildTmdbImage(bannerPath),
+];
+
+const movieImages: Record<number, MovieImages> = {
+  2026001: {
+    poster: buildWikiImage('/wikipedia/en/thumb/9/97/The_Devil_Wears_Prada_2_%28film_poster%29.png/500px-The_Devil_Wears_Prada_2_%28film_poster%29.png'),
+    banner: buildWikiImage('/wikipedia/en/thumb/9/97/The_Devil_Wears_Prada_2_%28film_poster%29.png/500px-The_Devil_Wears_Prada_2_%28film_poster%29.png'),
+    photos: [
+      buildWikiImage('/wikipedia/en/thumb/9/97/The_Devil_Wears_Prada_2_%28film_poster%29.png/500px-The_Devil_Wears_Prada_2_%28film_poster%29.png'),
+      buildWikiImage('/wikipedia/en/thumb/9/97/The_Devil_Wears_Prada_2_%28film_poster%29.png/500px-The_Devil_Wears_Prada_2_%28film_poster%29.png'),
+      buildWikiImage('/wikipedia/en/thumb/9/97/The_Devil_Wears_Prada_2_%28film_poster%29.png/500px-The_Devil_Wears_Prada_2_%28film_poster%29.png'),
+    ],
+  },
+  2026002: {
+    poster: buildWikiImage('/wikipedia/en/thumb/3/37/Michael_%282026_film_poster%29.png/500px-Michael_%282026_film_poster%29.png'),
+    banner: buildWikiImage('/wikipedia/en/thumb/3/37/Michael_%282026_film_poster%29.png/500px-Michael_%282026_film_poster%29.png'),
+    photos: [
+      buildWikiImage('/wikipedia/en/thumb/3/37/Michael_%282026_film_poster%29.png/500px-Michael_%282026_film_poster%29.png'),
+      buildWikiImage('/wikipedia/en/thumb/3/37/Michael_%282026_film_poster%29.png/500px-Michael_%282026_film_poster%29.png'),
+      buildWikiImage('/wikipedia/en/thumb/3/37/Michael_%282026_film_poster%29.png/500px-Michael_%282026_film_poster%29.png'),
+    ],
+  },
+  2026003: {
+    poster: 'https://www.mariowiki.com/images/d/d5/The_Super_Mario_Galaxy_Movie_Poster_9.jpg?67764=',
+    banner: 'https://www.mariowiki.com/images/d/d5/The_Super_Mario_Galaxy_Movie_Poster_9.jpg?67764=',
+    photos: [
+      'https://www.mariowiki.com/images/d/d5/The_Super_Mario_Galaxy_Movie_Poster_9.jpg?67764=',
+      'https://www.mariowiki.com/images/d/d5/The_Super_Mario_Galaxy_Movie_Poster_9.jpg?67764=',
+      'https://www.mariowiki.com/images/d/d5/The_Super_Mario_Galaxy_Movie_Poster_9.jpg?67764=',
+    ],
+  },
+  696506: {
+    poster: buildWikiImage('/wikipedia/en/thumb/2/2d/Mickey_17_film_poster.png/500px-Mickey_17_film_poster.png'),
+    banner: buildTmdbImage('/9PRKAdrDvAdCfg3EcApLTfzGsEt.jpg'),
+    photos: [
+      buildTmdbImage('/9PRKAdrDvAdCfg3EcApLTfzGsEt.jpg'),
+      buildWikiImage('/wikipedia/en/thumb/2/2d/Mickey_17_film_poster.png/500px-Mickey_17_film_poster.png'),
+      buildTmdbImage('/9PRKAdrDvAdCfg3EcApLTfzGsEt.jpg'),
+    ],
+  },
+  822119: {
+    poster: buildTmdbImage('/wDRXmiAEJdhNIcuetM4016fOCx8.jpg'),
+    banner: buildTmdbImage('/8eifdha9GQeZAkexgtD45546XKx.jpg'),
+    photos: createGallery('/wDRXmiAEJdhNIcuetM4016fOCx8.jpg', '/8eifdha9GQeZAkexgtD45546XKx.jpg'),
+  },
+  426063: {
+    poster: buildTmdbImage('/5qGIxdEO841C0tdY8vOdLoRVrr0.jpg'),
+    banner: buildTmdbImage('/uWOJbarUXfVf6B4o0368dh138eR.jpg'),
+    photos: createGallery('/5qGIxdEO841C0tdY8vOdLoRVrr0.jpg', '/uWOJbarUXfVf6B4o0368dh138eR.jpg'),
+  },
+  762509: {
+    poster: buildWikiImage('/wikipedia/en/thumb/0/0b/Mufasa_The_Lion_King_Movie_2024.jpeg/500px-Mufasa_The_Lion_King_Movie_2024.jpeg'),
+    banner: buildTmdbImage('/1w8kutrRucTd3wIYyu5QlUDMiG1.jpg'),
+    photos: [
+      buildTmdbImage('/1w8kutrRucTd3wIYyu5QlUDMiG1.jpg'),
+      buildWikiImage('/wikipedia/en/thumb/0/0b/Mufasa_The_Lion_King_Movie_2024.jpeg/500px-Mufasa_The_Lion_King_Movie_2024.jpeg'),
+      buildTmdbImage('/1w8kutrRucTd3wIYyu5QlUDMiG1.jpg'),
+    ],
+  },
+  558449: {
+    poster: buildTmdbImage('/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg'),
+    banner: buildTmdbImage('/euYIwmwkmz95mnXvufEmbL6ovhZ.jpg'),
+    photos: createGallery('/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg', '/euYIwmwkmz95mnXvufEmbL6ovhZ.jpg'),
+  },
+  845781: {
+    poster: buildTmdbImage('/cdqLnri3NEGcmfnqwk2TSIYtddg.jpg'),
+    banner: buildTmdbImage('/cjEcqdRdPQJhYre3HUAc5538Gk8.jpg'),
+    photos: createGallery('/cdqLnri3NEGcmfnqwk2TSIYtddg.jpg', '/cjEcqdRdPQJhYre3HUAc5538Gk8.jpg'),
+  },
+  1241982: {
+    poster: buildTmdbImage('/aLVkiINlIeCkcZIzb7XHzPYgO6L.jpg'),
+    banner: buildTmdbImage('/vYqt6kb4lcF8wwqsMMaULkP9OEn.jpg'),
+    photos: createGallery('/aLVkiINlIeCkcZIzb7XHzPYgO6L.jpg', '/vYqt6kb4lcF8wwqsMMaULkP9OEn.jpg'),
+  },
+  912649: {
+    poster: buildTmdbImage('/aosm8NMQ3UyoBVpSxyimorCQykC.jpg'),
+    banner: buildTmdbImage('/3V4kLQg0kSqPLctI5ziYWabAZYF.jpg'),
+    photos: createGallery('/aosm8NMQ3UyoBVpSxyimorCQykC.jpg', '/3V4kLQg0kSqPLctI5ziYWabAZYF.jpg'),
+  },
+  1184918: {
+    poster: buildTmdbImage('/9w0Vh9eizfBXrcomiaFWTIPdboo.jpg'),
+    banner: buildTmdbImage('/1pmXyN3sKeYoUhu5VBZiDU4BX21.jpg'),
+    photos: createGallery('/9w0Vh9eizfBXrcomiaFWTIPdboo.jpg', '/1pmXyN3sKeYoUhu5VBZiDU4BX21.jpg'),
+  },
+  933260: {
+    poster: buildTmdbImage('/lqoMzCcZYEFK729d6qzt349fB4o.jpg'),
+    banner: buildTmdbImage('/7h6TqPB3ESmjuVbxCxAeB1c9OB1.jpg'),
+    photos: createGallery('/lqoMzCcZYEFK729d6qzt349fB4o.jpg', '/7h6TqPB3ESmjuVbxCxAeB1c9OB1.jpg'),
+  },
+  945961: {
+    poster: buildTmdbImage('/2uSWRTtCG336nuBiG8jOTEUKSy8.jpg'),
+    banner: buildTmdbImage('/eP4RZSHliWu6lPT5WQyHr5ZZKuC.jpg'),
+    photos: createGallery('/2uSWRTtCG336nuBiG8jOTEUKSy8.jpg', '/eP4RZSHliWu6lPT5WQyHr5ZZKuC.jpg'),
+  },
+  533535: {
+    poster: buildTmdbImage('/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg'),
+    banner: buildTmdbImage('/dvBCdCohwWbsP5qAaglOXagDMtk.jpg'),
+    photos: createGallery('/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg', '/dvBCdCohwWbsP5qAaglOXagDMtk.jpg'),
+  },
+  1022789: {
+    poster: buildTmdbImage('/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg'),
+    banner: buildTmdbImage('/stKGOm8UyhuLPR9sZLjs5AkmncA.jpg'),
+    photos: createGallery('/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg', '/stKGOm8UyhuLPR9sZLjs5AkmncA.jpg'),
+  },
+  653346: {
+    poster: buildTmdbImage('/4925wPllJdQmHd1RxbZ62ZekaW3.jpg'),
+    banner: buildTmdbImage('/iHYh4cdO8ylA3W0dUxTDVdyJ5G9.jpg'),
+    photos: createGallery('/4925wPllJdQmHd1RxbZ62ZekaW3.jpg', '/iHYh4cdO8ylA3W0dUxTDVdyJ5G9.jpg'),
+  },
+  786892: {
+    poster: buildTmdbImage('/hbxqFdWXHeLIJfagMMhVG5SV5tb.jpg'),
+    banner: buildTmdbImage('/wNAhuOZ3Zf84jCIlrcI6JhgmY5q.jpg'),
+    photos: createGallery('/hbxqFdWXHeLIJfagMMhVG5SV5tb.jpg', '/wNAhuOZ3Zf84jCIlrcI6JhgmY5q.jpg'),
+  },
+  929590: {
+    poster: buildTmdbImage('/4V06xpCUesnzXvkQav1q3RRlwxh.jpg'),
+    banner: buildTmdbImage('/t2SXZ7KLriaLyf5QT8Iar6fSOGp.jpg'),
+    photos: createGallery('/4V06xpCUesnzXvkQav1q3RRlwxh.jpg', '/t2SXZ7KLriaLyf5QT8Iar6fSOGp.jpg'),
+  },
+  693134: {
+    poster: buildTmdbImage('/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg'),
+    banner: buildTmdbImage('/rRBD8ORo9y34tYkAQJVbn4Ml6tu.jpg'),
+    photos: createGallery('/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg', '/rRBD8ORo9y34tYkAQJVbn4Ml6tu.jpg'),
+  },
+  872585: {
+    poster: buildTmdbImage('/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg'),
+    banner: buildTmdbImage('/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg'),
+    photos: createGallery('/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg', '/rLb2cwF3Pazuxaj0sRXQ037tGI1.jpg'),
+  },
+  569094: {
+    poster: buildTmdbImage('/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg'),
+    banner: buildTmdbImage('/nGxUxi3PfXDRm7Vg95VBNgNM8yc.jpg'),
+    photos: createGallery('/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg', '/nGxUxi3PfXDRm7Vg95VBNgNM8yc.jpg'),
+  },
+  603692: {
+    poster: buildTmdbImage('/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg'),
+    banner: buildTmdbImage('/h8gHn0OzBoaefsYseUByqsmEDMY.jpg'),
+    photos: createGallery('/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg', '/h8gHn0OzBoaefsYseUByqsmEDMY.jpg'),
+  },
+  545611: {
+    poster: buildTmdbImage('/iN3vKCuOGRdZ9Cn3yRGCyMlaiST.jpg'),
+    banner: buildTmdbImage('/ss0Os3uWJfQAENILHZUdX8Tt1OC.jpg'),
+    photos: createGallery('/iN3vKCuOGRdZ9Cn3yRGCyMlaiST.jpg', '/ss0Os3uWJfQAENILHZUdX8Tt1OC.jpg'),
+  },
+  414906: {
+    poster: buildTmdbImage('/74xTEgt7R36Fpooo50r9T25onhq.jpg'),
+    banner: buildTmdbImage('/b0PlSFdDwbyK0cf5RxwDpaOJQvQ.jpg'),
+    photos: createGallery('/74xTEgt7R36Fpooo50r9T25onhq.jpg', '/b0PlSFdDwbyK0cf5RxwDpaOJQvQ.jpg'),
+  },
+  496243: {
+    poster: buildTmdbImage('/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg'),
+    banner: buildTmdbImage('/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg'),
+    photos: createGallery('/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg', '/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg'),
+  },
+  475557: {
+    poster: buildTmdbImage('/tWjJ3ILjsbTwKgXxEv48QAbYZ19.jpg'),
+    banner: buildTmdbImage('/hO7KbdvGOtDdeg0W4Y5nKEHeDDh.jpg'),
+    photos: createGallery('/tWjJ3ILjsbTwKgXxEv48QAbYZ19.jpg', '/hO7KbdvGOtDdeg0W4Y5nKEHeDDh.jpg'),
+  },
+  335984: {
+    poster: buildTmdbImage('/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg'),
+    banner: buildTmdbImage('/mVr0UiqyltcfqxbAUcLl9zWL8ah.jpg'),
+    photos: createGallery('/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg', '/mVr0UiqyltcfqxbAUcLl9zWL8ah.jpg'),
+  },
+  157336: {
+    poster: buildTmdbImage('/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg'),
+    banner: buildTmdbImage('/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg'),
+    photos: createGallery('/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg', '/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg'),
+  },
+};
+
+const withOriginalImages = (movie: Omit<Movie, 'poster' | 'banner' | 'photos' | 'fallback'>): Movie => {
+  const images = movieImages[movie.id] ?? {
+    poster: MOVIE_IMAGE_FALLBACK,
+    banner: MOVIE_IMAGE_FALLBACK,
+    photos: [MOVIE_IMAGE_FALLBACK, MOVIE_IMAGE_FALLBACK, MOVIE_IMAGE_FALLBACK],
+  };
+
+  return {
+    ...movie,
+    ...images,
+    fallback: MOVIE_IMAGE_FALLBACK,
+  };
+};
 
 export const MOVIES: Movie[] = [
   {
@@ -749,4 +934,4 @@ export const MOVIES: Movie[] = [
     "year": 2014
   }
 ]
-  .map((movie) => withLocalImages(movie));
+  .map((movie) => withOriginalImages(movie));

@@ -17,7 +17,8 @@ describe('MovieService', () => {
 
   it('should return movies from the local catalog', () => {
     expect(service.getMovies().length).toBe(MOVIES.length);
-    expect(service.getMovies()[0].poster).toContain('assets/img/');
+    expect(service.getMovies()[0].poster).toContain('https://');
+    expect(service.getMovies()[0].fallback).toBe('assets/img/movie-fallback.svg');
   });
 
   it('should find a movie by id', () => {

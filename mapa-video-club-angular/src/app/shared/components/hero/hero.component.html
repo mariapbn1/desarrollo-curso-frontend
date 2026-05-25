@@ -1,4 +1,4 @@
-<section class="hero-section" [style.background-image]="movie ? 'url(' + movie.banner + ')' : null">
+<section class="hero-section" [style.background-image]="movie ? 'url(' + (movie.banner || movie.fallback) + ')' : null">
   <div class="hero-overlay"></div>
 
   <div class="hero-shell">
@@ -50,7 +50,11 @@
     </div>
 
     <div class="hero-brand-card" aria-hidden="true">
-      <img [src]="movie?.poster || 'assets/img/logo-m.png'" alt="" />
+      <img
+        [src]="movie?.poster || movie?.fallback || 'assets/img/logo-m.png'"
+        alt=""
+        (error)="handleImageError($event, movie?.fallback || 'assets/img/movie-fallback.svg')"
+      />
     </div>
   </div>
 </section>

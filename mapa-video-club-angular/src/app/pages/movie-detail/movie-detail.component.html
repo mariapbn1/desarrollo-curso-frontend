@@ -150,6 +150,65 @@
           </div>
         </section>
       }
+
+      <section class="detail-comments content-panel" aria-label="Comentarios de clientes">
+        <header class="detail-comments__header">
+          <div>
+            <h2>Comentarios de clientes</h2>
+            <p>{{ comments().length }} {{ comments().length === 1 ? 'comentario' : 'comentarios' }}</p>
+          </div>
+        </header>
+
+        <form class="comment-form" (ngSubmit)="submitComment()" novalidate>
+          <label class="comment-field">
+            <span>Nombre</span>
+            <input
+              type="text"
+              name="commentName"
+              autocomplete="name"
+              [(ngModel)]="commentForm.name"
+              required
+            />
+          </label>
+
+          <label class="comment-field">
+            <span>Comentario</span>
+            <textarea
+              name="commentText"
+              rows="4"
+              [(ngModel)]="commentForm.text"
+              required
+            ></textarea>
+          </label>
+
+          <button class="app-btn-primary comment-submit" type="submit">Publicar comentario</button>
+        </form>
+
+        @if (commentFeedback) {
+          <p class="comment-feedback" [class.is-success]="commentFeedbackType === 'success'" aria-live="polite">
+            {{ commentFeedback }}
+          </p>
+        }
+
+        @if (comments().length > 0) {
+          <div class="comments-list">
+            @for (comment of comments(); track comment.id) {
+              <article class="comment-card">
+                <div class="comment-card__header">
+                  <div>
+                    <h3>{{ comment.name }}</h3>
+                    <span>{{ comment.dateLabel }}</span>
+                  </div>
+                  <button class="comment-delete" type="button" (click)="deleteComment(comment.id)">Eliminar</button>
+                </div>
+                <p>{{ comment.text }}</p>
+              </article>
+            }
+          </div>
+        } @else {
+          <div class="empty-state comments-empty">Aun no hay comentarios para esta pelicula.</div>
+        }
+      </section>
     </section>
   } @else {
     <section class="not-found">

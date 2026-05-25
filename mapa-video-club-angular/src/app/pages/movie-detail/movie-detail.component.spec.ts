@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 
 import { CartService } from '../../core/services/cart.service';
+import { CommentService } from '../../core/services/comment.service';
 import { MOVIES } from '../../data/movies.data';
 import { MovieDetailComponent } from './movie-detail.component';
 
@@ -48,6 +49,14 @@ describe('MovieDetailComponent', () => {
     expect(compiled.textContent).toContain(selectedMovie.review);
   });
 
+  it('should render comments section and empty state', async () => {
+    const fixture = await setup(String(MOVIES[0].id));
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('Comentarios de clientes');
+    expect(compiled.textContent).toContain('Aun no hay comentarios para esta pelicula.');
+  });
+
   it('should render not found state when id does not exist', async () => {
     const fixture = await setup('movie-not-found');
     const compiled = fixture.nativeElement as HTMLElement;
@@ -65,5 +74,57 @@ describe('MovieDetailComponent', () => {
     await fixture.whenStable();
 
     expect(cartService.isInCart(MOVIES[0].id)).toBe(true);
+  });
+
+  it('should add and render a comment', async () => {
+    const fixture = await setup(String(MOVIES[0].id));
+
+    fixture.componentInstance.commentForm = {
+      name: 'Laura',
+      text: 'La volveria a rentar.',
+    };
+    fixture.componentInstance.submitComment();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('Laura');
+    expect(compiled.textContent).toContain('La volveria a rentar.');
+  });
+
+  it('should load persisted comments for the current movie', async () => {
+    localStorage.clear();
+    TestBed.resetTestingModule();
+
+    await TestBed.configureTestingModule({
+      imports: [MovieDetailComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              paramMap: convertToParamMap({ id: String(MOVIES[0].id) }),
+            },
+          },
+        },
+      ],
+    }).compileComponents();
+
+    const commentService = TestBed.inject(CommentService);
+    commentService.addComment(MOVIES[0].id, {
+      name: 'Diego',
+      text: 'Comentario persistido.',
+    });
+
+    const fixture = TestBed.createComponent(MovieDetailComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    expect(compiled.textContent).toContain('Diego');
+    expect(compiled.textContent).toContain('Comentario persistido.');
   });
 });

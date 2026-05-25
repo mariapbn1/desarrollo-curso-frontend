@@ -1,7 +1,20 @@
 export interface Comment {
-  id: string;
+  id: number;
   movieId: string;
-  userName: string;
-  message: string;
+  name: string;
+  text: string;
+  dateLabel: string;
   createdAt: string;
+}
+
+export interface CommentFormData {
+  name: string;
+  text: string;
+}
+
+export interface CommentResult {
+  success: boolean;
+  message: string;
+  comment?: Comment;
+  comments: readonly Comment[];
 }

@@ -3,8 +3,16 @@
 }
 
 .movie-carousel__track {
-  display: grid;
+  display: flex;
   gap: 0.9rem;
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
   margin-top: 1rem;
+  overflow-x: auto;
+  padding: 0.15rem 0 0.65rem;
+  scroll-snap-type: x proximity;
+  scrollbar-color: var(--color-secondary) rgba(0, 217, 255, 0.08);
+}
+
+.movie-carousel__track app-movie-card {
+  flex: 0 0 clamp(17rem, 24vw, 20.5rem);
+  scroll-snap-align: start;
 }

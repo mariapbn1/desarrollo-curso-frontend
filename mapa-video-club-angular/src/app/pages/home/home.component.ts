@@ -11,6 +11,7 @@ import { FeaturedShelvesComponent } from '../../shared/components/featured-shelv
 import { FiltersBarComponent } from '../../shared/components/filters-bar/filters-bar.component';
 import { HeroComponent } from '../../shared/components/hero/hero.component';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
+import { MovieCarouselComponent } from '../../shared/components/movie-carousel/movie-carousel.component';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
 
 @Component({
@@ -20,6 +21,7 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
     FiltersBarComponent,
     HeroComponent,
     MovieCardComponent,
+    MovieCarouselComponent,
     NavbarComponent,
     RouterLink,
   ],
@@ -38,8 +40,8 @@ export class HomeComponent {
   readonly currentUser = this.authService.currentUser;
   readonly featuredMovie = this.movieService.getLatestMovies(1)[0];
   readonly latestMovies = this.movieService.getLatestMovies(6);
-  readonly topRentalMovies = this.movieService.getTopRentalMovies(6);
-  readonly popularMovies = this.movieService.getPopularMovies(6);
+  readonly topRentalMovies = this.movieService.getTopRentalMovies(4);
+  readonly popularMovies = this.movieService.getPopularMovies(4);
   readonly favoriteMovies = computed(() => {
     const favoriteIds = new Set(this.favoriteService.getFavorites().map((movieId) => String(movieId)));
 

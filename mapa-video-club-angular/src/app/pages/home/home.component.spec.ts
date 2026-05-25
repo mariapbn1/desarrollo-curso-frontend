@@ -68,7 +68,7 @@ describe('HomeComponent', () => {
     expect(component.hasActiveFilters()).toBe(true);
     expect(component.catalogTitle()).toBe('Resultados filtrados');
     expect(component.visibleCatalogMovies().map((movie) => movie.title)).toEqual(['Michael']);
-    expect(fixture.nativeElement.textContent).not.toContain('Recien llegadas');
+    expect(fixture.nativeElement.textContent).not.toContain('Novedades');
   });
 
   it('should restore normal catalog when filters are cleared', async () => {
@@ -82,7 +82,16 @@ describe('HomeComponent', () => {
     expect(component.hasActiveFilters()).toBe(false);
     expect(component.catalogTitle()).toBe('Todas las peliculas');
     expect(component.visibleCatalogMovies().length).toBe(MOVIES.length);
-    expect(fixture.nativeElement.textContent).toContain('Recien llegadas');
+    expect(fixture.nativeElement.textContent).toContain('Novedades');
+  });
+
+  it('should limit featured rental and popular shelves to four movies', async () => {
+    await setup();
+
+    expect(component.latestMovies.length).toBe(6);
+    expect(component.topRentalMovies.length).toBeLessThanOrEqual(4);
+    expect(component.popularMovies.length).toBeLessThanOrEqual(4);
+    expect(fixture.nativeElement.textContent).not.toContain('Recien llegadas');
   });
 
   it('should show only favorite movies in favorites view with active user', async () => {

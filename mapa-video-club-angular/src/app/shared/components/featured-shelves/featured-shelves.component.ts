@@ -10,9 +10,6 @@ import { MovieCarouselComponent } from '../movie-carousel/movie-carousel.compone
   styleUrl: './featured-shelves.component.scss',
 })
 export class FeaturedShelvesComponent {
-  @Input() latestMovies: readonly Movie[] = [];
   @Input() topRentalMovies: readonly Movie[] = [];
   @Input() popularMovies: readonly Movie[] = [];
-  @Input() favoriteMovies: readonly Movie[] = [];
-  @Input() hasActiveUser = false;
 }

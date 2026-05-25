@@ -1,18 +1,4 @@
 <section class="featured-shelves">
-  @if (hasActiveUser) {
-    @if (favoriteMovies.length > 0) {
-      <app-movie-carousel title="Tu lista favorita" [movies]="favoriteMovies" />
-    } @else {
-      <section class="collection-section">
-        <div class="collection-card">
-          <span class="section-tag">Favoritas</span>
-          <h2 class="section-title">Tu lista favorita</h2>
-          <div class="empty-state">No tienes peliculas favoritas todavia.</div>
-        </div>
-      </section>
-    }
-  }
-  <app-movie-carousel title="Recien llegadas" [movies]="latestMovies" />
   <app-movie-carousel title="Top rentas" [movies]="topRentalMovies" />
   <app-movie-carousel title="Mas populares" [movies]="popularMovies" />
 </section>

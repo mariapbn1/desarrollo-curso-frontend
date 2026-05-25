@@ -10,12 +10,10 @@
       (filtersChange)="onFiltersChange($event)"
     />
     @if (!hasActiveFilters()) {
+      <app-movie-carousel title="Novedades" [movies]="latestMovies" />
       <app-featured-shelves
-        [latestMovies]="latestMovies"
         [topRentalMovies]="topRentalMovies"
         [popularMovies]="popularMovies"
-        [favoriteMovies]="favoriteMovies()"
-        [hasActiveUser]="currentUser() !== null"
       />
     }
   }

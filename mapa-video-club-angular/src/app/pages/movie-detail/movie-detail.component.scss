@@ -153,6 +153,12 @@
   box-shadow: 0 0 18px rgba(255, 47, 109, 0.42);
 }
 
+.detail-cart-button.is-in-cart,
+.detail-cart-button:disabled {
+  cursor: default;
+  opacity: 0.72;
+}
+
 .detail-content {
   display: grid;
   gap: 1.25rem;

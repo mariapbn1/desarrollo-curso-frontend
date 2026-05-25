@@ -13,8 +13,11 @@
         <img class="nav-icon-img" src="assets/img/icons/icon-favorite-neon.png" alt="Favoritos" />
       </a>
     }
-    <button class="nav-icon-link" type="button" aria-label="Carrito">
+    <button class="nav-icon-link cart-nav-button" type="button" aria-label="Carrito" (click)="openCart()">
       <img class="nav-icon-img" src="assets/img/icons/icon-cart-neon.png" alt="Carrito" />
+      @if (cartCount() > 0) {
+        <span class="cart-count-badge">{{ cartCount() }}</span>
+      }
     </button>
 
     @if (currentUser(); as user) {
@@ -31,3 +34,5 @@
     }
   </div>
 </nav>
+
+<app-cart-modal [isOpen]="isCartOpen" (closed)="closeCart()" />

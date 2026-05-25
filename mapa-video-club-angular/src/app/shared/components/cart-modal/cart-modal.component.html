@@ -1,3 +1,60 @@
-<section class="content-panel" aria-label="Carrito">
-  <p>Carrito pendiente de migracion.</p>
-</section>
+@if (isOpen) {
+  <section class="cart-modal" aria-label="Carrito" aria-modal="true" role="dialog">
+    <button class="cart-modal__backdrop" type="button" aria-label="Cerrar carrito" (click)="close()"></button>
+
+    <aside class="cart-modal__panel" tabindex="-1">
+      <header class="cart-modal__header">
+        <div>
+          <span class="cart-modal__kicker">Renta simulada</span>
+          <h2>Carrito</h2>
+        </div>
+        <button class="cart-modal__close" type="button" aria-label="Cerrar carrito" (click)="close()">&times;</button>
+      </header>
+
+      @if (checkoutMessage) {
+        <div class="cart-empty-state is-success">
+          <span class="cart-empty-icon">OK</span>
+          <h3>Compra exitosa</h3>
+          <p>{{ checkoutMessage }}</p>
+          <button class="app-btn-primary" type="button" (click)="discoverMovies()">Volver al cat&aacute;logo</button>
+        </div>
+      } @else if (cartItems().length === 0) {
+        <div class="cart-empty-state">
+          <span class="cart-empty-icon">VHS</span>
+          <h3>Tu carrito est&aacute; vac&iacute;o</h3>
+          <p>Agrega pel&iacute;culas del cat&aacute;logo para simular tu pedido.</p>
+          <button class="app-btn-primary" type="button" (click)="discoverMovies()">Descubrir pel&iacute;culas</button>
+        </div>
+      } @else {
+        <div class="cart-items">
+          @for (item of cartItems(); track trackCartItem($index, item)) {
+            <article class="cart-item">
+              <img
+                class="cart-item__poster"
+                [src]="item.movie.poster || item.movie.fallback"
+                [alt]="item.movie.title"
+                (error)="handleImageError($event, item.movie.fallback)"
+              />
+
+              <div class="cart-item__body">
+                <h3>{{ item.movie.title }}</h3>
+                <p>{{ item.movie.format }}</p>
+                <p class="cart-item__price">{{ formatPrice(item.unitPrice) }} / {{ item.movie.rentalTime }}</p>
+              </div>
+
+              <button class="cart-item__remove" type="button" (click)="removeFromCart(item.movieId)">Eliminar</button>
+            </article>
+          }
+        </div>
+
+        <footer class="cart-summary">
+          <div>
+            <span>Total</span>
+            <strong>{{ formatPrice(cartTotal()) }}</strong>
+          </div>
+          <button class="app-btn-primary" type="button" (click)="buyCart()">Comprar</button>
+        </footer>
+      }
+    </aside>
+  </section>
+}

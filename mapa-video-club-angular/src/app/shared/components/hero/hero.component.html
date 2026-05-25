@@ -18,7 +18,15 @@
 
         <div class="hero-actions">
           <a class="app-btn-primary" [routerLink]="['/pelicula', featuredMovie.id]">Ver detalle</a>
-          <button class="app-btn-secondary" type="button">Agregar al carrito</button>
+          <button
+            class="app-btn-secondary hero-cart-button"
+            type="button"
+            [class.is-in-cart]="isInCart(featuredMovie.id)"
+            [disabled]="!canAddToCart(featuredMovie)"
+            (click)="addToCart(featuredMovie)"
+          >
+            {{ getCartButtonLabel(featuredMovie) }}
+          </button>
           <button
             class="hero-favorite"
             type="button"

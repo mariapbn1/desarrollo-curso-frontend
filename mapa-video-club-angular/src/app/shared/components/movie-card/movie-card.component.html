@@ -53,7 +53,15 @@
 
       <div class="movie-actions">
         <a class="app-btn-primary" [routerLink]="['/pelicula', currentMovie.id]">Ver detalle</a>
-        <button class="app-btn-secondary movie-cart-button" type="button">Agregar al carrito</button>
+        <button
+          class="app-btn-secondary movie-cart-button"
+          type="button"
+          [class.is-in-cart]="isInCart(currentMovie.id)"
+          [disabled]="!canAddToCart(currentMovie)"
+          (click)="addToCart(currentMovie, $event)"
+        >
+          {{ getCartButtonLabel(currentMovie) }}
+        </button>
       </div>
     </div>
   } @else {

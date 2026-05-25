@@ -38,7 +38,15 @@
           </div>
 
           <div class="detail-actions">
-            <button class="app-btn-primary" type="button">Agregar al carrito</button>
+            <button
+              class="app-btn-primary detail-cart-button"
+              type="button"
+              [class.is-in-cart]="isInCart(currentMovie.id)"
+              [disabled]="!canAddToCart(currentMovie)"
+              (click)="addToCart(currentMovie)"
+            >
+              {{ getCartButtonLabel(currentMovie) }}
+            </button>
             <button
               class="detail-favorite"
               type="button"

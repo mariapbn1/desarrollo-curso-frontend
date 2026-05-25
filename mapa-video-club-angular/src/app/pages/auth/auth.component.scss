@@ -1,3 +1,121 @@
 :host {
   display: block;
 }
+
+.auth-shell {
+  display: grid;
+  min-height: calc(100vh - 6rem);
+  place-items: center;
+  padding: var(--space-section) clamp(1rem, 5vw, 4rem);
+}
+
+.auth-panel {
+  display: grid;
+  gap: 1.35rem;
+  width: min(34rem, 100%);
+}
+
+.auth-panel__header {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.auth-kicker {
+  margin: 0;
+  color: var(--color-secondary);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.auth-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  padding: 0.35rem;
+  border: 1px solid rgba(0, 217, 255, 0.22);
+  border-radius: var(--radius-md);
+  background: rgba(0, 217, 255, 0.04);
+}
+
+.auth-toggle__button {
+  min-height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius-md) - 0.25rem);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.auth-toggle__button.is-active {
+  border-color: rgba(255, 47, 109, 0.54);
+  background: rgba(255, 47, 109, 0.14);
+  color: var(--color-text);
+  box-shadow: 0 0 18px rgba(255, 47, 109, 0.22);
+}
+
+.auth-form,
+.auth-session {
+  display: grid;
+  gap: 1rem;
+}
+
+.auth-session h2 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.auth-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.auth-field span {
+  color: var(--color-secondary);
+  font-size: 0.8rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-field input {
+  width: 100%;
+  min-height: 3rem;
+  border: 1px solid rgba(0, 217, 255, 0.24);
+  border-radius: var(--radius-md);
+  background: rgba(3, 5, 18, 0.72);
+  color: var(--color-text);
+  padding: 0.85rem 1rem;
+  outline: none;
+}
+
+.auth-field input:focus {
+  border-color: rgba(0, 217, 255, 0.82);
+  box-shadow: 0 0 18px rgba(0, 217, 255, 0.2);
+}
+
+.auth-feedback {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 63, 108, 0.44);
+  border-radius: var(--radius-md);
+  background: rgba(255, 63, 108, 0.08);
+  color: #ff9fb8;
+  font-weight: 800;
+}
+
+.auth-feedback.is-success {
+  border-color: rgba(56, 245, 139, 0.42);
+  background: rgba(56, 245, 139, 0.08);
+  color: var(--color-success);
+}
+
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

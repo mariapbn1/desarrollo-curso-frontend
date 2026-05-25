@@ -1,8 +1,124 @@
 <app-navbar />
 
-<main class="page-shell">
-  <div class="page-shell__content content-panel">
-    <h1 class="page-title">Acceso</h1>
-    <p class="page-copy">Login pendiente de migracion.</p>
-  </div>
+<main class="auth-shell">
+  <section class="auth-panel content-panel" aria-labelledby="auth-title">
+    <div class="auth-panel__header">
+      <p class="auth-kicker">MAPA VIDEO CLUB</p>
+      <h1 id="auth-title" class="page-title">Acceso</h1>
+    </div>
+
+    @if (currentUser(); as user) {
+      <div class="auth-session">
+        <p class="page-copy">Sesion activa</p>
+        <h2>Hola, {{ user.name }}</h2>
+        <div class="auth-actions">
+          <a class="app-btn-primary" routerLink="/">Volver al catalogo</a>
+          <button class="app-btn-secondary" type="button" (click)="logout()">Salir</button>
+        </div>
+      </div>
+    } @else {
+      <div class="auth-toggle" role="tablist" aria-label="Autenticacion">
+        <button
+          type="button"
+          class="auth-toggle__button"
+          [class.is-active]="mode === 'login'"
+          [attr.aria-selected]="mode === 'login'"
+          (click)="showMode('login')"
+        >
+          Login
+        </button>
+        <button
+          type="button"
+          class="auth-toggle__button"
+          [class.is-active]="mode === 'register'"
+          [attr.aria-selected]="mode === 'register'"
+          (click)="showMode('register')"
+        >
+          Registro
+        </button>
+      </div>
+
+      @if (mode === 'login') {
+        <form class="auth-form" (ngSubmit)="submitLogin()" novalidate>
+          <label class="auth-field">
+            <span>Correo</span>
+            <input
+              type="email"
+              name="loginEmail"
+              autocomplete="email"
+              [(ngModel)]="loginData.email"
+              required
+            />
+          </label>
+
+          <label class="auth-field">
+            <span>Contrase&ntilde;a</span>
+            <input
+              type="password"
+              name="loginPassword"
+              autocomplete="current-password"
+              [(ngModel)]="loginData.password"
+              required
+            />
+          </label>
+
+          <button class="app-btn-primary" type="submit">Ingresar</button>
+        </form>
+      } @else {
+        <form class="auth-form" (ngSubmit)="submitRegister()" novalidate>
+          <label class="auth-field">
+            <span>Nombre</span>
+            <input
+              type="text"
+              name="registerName"
+              autocomplete="name"
+              [(ngModel)]="registerData.name"
+              required
+            />
+          </label>
+
+          <label class="auth-field">
+            <span>Correo</span>
+            <input
+              type="email"
+              name="registerEmail"
+              autocomplete="email"
+              [(ngModel)]="registerData.email"
+              required
+            />
+          </label>
+
+          <label class="auth-field">
+            <span>Contrase&ntilde;a</span>
+            <input
+              type="password"
+              name="registerPassword"
+              autocomplete="new-password"
+              [(ngModel)]="registerData.password"
+              required
+            />
+          </label>
+
+          <label class="auth-field">
+            <span>Confirmar contrase&ntilde;a</span>
+            <input
+              type="password"
+              name="registerConfirmPassword"
+              autocomplete="new-password"
+              [(ngModel)]="registerData.confirmPassword"
+              required
+            />
+          </label>
+
+          <button class="app-btn-primary" type="submit">Crear cuenta</button>
+        </form>
+      }
+
+      @if (message) {
+        <p class="auth-feedback" [class.is-success]="messageType === 'success'" aria-live="polite">
+          {{ message }}
+        </p>
+      }
+    }
+  </section>
 </main>

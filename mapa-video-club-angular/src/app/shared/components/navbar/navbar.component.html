@@ -14,8 +14,18 @@
     <button class="nav-icon-link" type="button" aria-label="Carrito">
       <img class="nav-icon-img" src="assets/img/icons/icon-cart-neon.png" alt="Carrito" />
     </button>
-    <a class="nav-icon-link" routerLink="/auth" routerLinkActive="is-active" aria-label="Usuario">
-      <img class="nav-icon-img" src="assets/img/icons/icon-user-neon.png" alt="Usuario" />
-    </a>
+
+    @if (currentUser(); as user) {
+      <span class="auth-user">
+        <img class="nav-icon-img" src="assets/img/icons/icon-user-neon.png" alt="" />
+        <span>Hola, {{ user.name }}</span>
+      </span>
+      <button class="nav-text-link auth-logout-button" type="button" (click)="logout()">Salir</button>
+    } @else {
+      <a class="auth-login-link" routerLink="/auth" routerLinkActive="is-active" aria-label="Ingresar">
+        <img class="nav-icon-img" src="assets/img/icons/icon-user-neon.png" alt="" />
+        <span>Ingresar</span>
+      </a>
+    }
   </div>
 </nav>

@@ -1,10 +1,142 @@
 <app-navbar />
 
-<main class="page-shell">
-  <div class="page-shell__content content-panel">
-    <a class="app-btn-secondary" routerLink="/">Volver al inicio</a>
-    <h1 class="page-title">Detalle de pelicula</h1>
-    <p class="page-copy">ID recibido: {{ movieId }}</p>
-    <p class="page-copy">El detalle completo se migrara en un paso posterior.</p>
-  </div>
+<main>
+  @if (movie; as currentMovie) {
+    <section
+      class="detail-hero"
+      [style.background-image]="'url(' + (currentMovie.banner || currentMovie.fallback) + ')'"
+    >
+      <div class="detail-hero__overlay"></div>
+      <div class="detail-hero__content">
+        <figure class="detail-poster">
+          <img
+            [src]="currentMovie.poster || currentMovie.fallback"
+            [alt]="currentMovie.title"
+            (error)="handleImageError($event, currentMovie.fallback)"
+          />
+        </figure>
+
+        <div class="detail-summary">
+          <a class="app-btn-secondary detail-back" routerLink="/">Volver al cat&aacute;logo</a>
+          <p class="detail-kicker">{{ currentMovie.genre }}</p>
+          <h1 class="detail-title">{{ currentMovie.title }}</h1>
+
+          <div class="detail-meta" aria-label="Datos principales de la pelicula">
+            <span>{{ currentMovie.year }}</span>
+            <span>{{ currentMovie.releaseDate }}</span>
+            <span>{{ currentMovie.rating.toFixed(1) }} / 10</span>
+            <span>{{ currentMovie.format }}</span>
+            <span [class.is-unavailable]="!currentMovie.available">{{ getAvailabilityLabel(currentMovie) }}</span>
+          </div>
+
+          <p class="detail-synopsis">{{ currentMovie.synopsis }}</p>
+
+          <div class="detail-rental">
+            <strong>{{ formatPrice(currentMovie.rentalPrice) }}</strong>
+            <span>{{ currentMovie.rentalTime }}</span>
+            <span>Stock: {{ currentMovie.stock }}</span>
+          </div>
+
+          <div class="detail-actions">
+            <button class="app-btn-primary" type="button">Agregar al carrito</button>
+            <button class="detail-favorite" type="button" aria-label="Agregar a favoritas">&#9825;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="detail-content">
+      <div class="detail-copy content-panel">
+        <h2>Sinopsis</h2>
+        <p>{{ currentMovie.synopsis }}</p>
+
+        <h2>Rese&ntilde;a</h2>
+        <p>{{ currentMovie.review }}</p>
+      </div>
+
+      <aside class="detail-facts content-panel" aria-label="Informacion de renta">
+        <div>
+          <span>Genero</span>
+          <strong>{{ currentMovie.genre }}</strong>
+        </div>
+        <div>
+          <span>Estreno</span>
+          <strong>{{ currentMovie.releaseDate }}</strong>
+        </div>
+        <div>
+          <span>A&ntilde;o</span>
+          <strong>{{ currentMovie.year }}</strong>
+        </div>
+        <div>
+          <span>Calificacion</span>
+          <strong>{{ currentMovie.rating.toFixed(1) }}</strong>
+        </div>
+        <div>
+          <span>Precio</span>
+          <strong>{{ formatPrice(currentMovie.rentalPrice) }}</strong>
+        </div>
+        <div>
+          <span>Tiempo</span>
+          <strong>{{ currentMovie.rentalTime }}</strong>
+        </div>
+        <div>
+          <span>Formato</span>
+          <strong>{{ currentMovie.format }}</strong>
+        </div>
+        <div>
+          <span>Stock</span>
+          <strong>{{ currentMovie.stock }}</strong>
+        </div>
+        <div>
+          <span>Disponibilidad</span>
+          <strong>{{ getAvailabilityLabel(currentMovie) }}</strong>
+        </div>
+      </aside>
+
+      @if (currentMovie.tags.length > 0) {
+        <section class="detail-strip content-panel" aria-label="Etiquetas">
+          <h2>Tags</h2>
+          <div class="detail-pills">
+            @for (tag of currentMovie.tags; track tag) {
+              <span>{{ tag }}</span>
+            }
+          </div>
+        </section>
+      }
+
+      @if (currentMovie.actors.length > 0) {
+        <section class="detail-strip content-panel" aria-label="Actores">
+          <h2>Actores</h2>
+          <div class="detail-pills">
+            @for (actor of currentMovie.actors; track actor) {
+              <span>{{ actor }}</span>
+            }
+          </div>
+        </section>
+      }
+
+      @if (currentMovie.photos.length > 0) {
+        <section class="detail-gallery-section content-panel">
+          <h2>Galeria</h2>
+          <div class="detail-gallery">
+            @for (photo of currentMovie.photos; track $index) {
+              <img
+                [src]="photo || currentMovie.fallback"
+                [alt]="currentMovie.title + ' foto ' + ($index + 1)"
+                (error)="handleImageError($event, currentMovie.fallback)"
+              />
+            }
+          </div>
+        </section>
+      }
+    </section>
+  } @else {
+    <section class="not-found">
+      <div class="not-found__panel content-panel">
+        <h1 class="page-title">Pel&iacute;cula no encontrada</h1>
+        <p class="page-copy">La pelicula solicitada no existe en el catalogo actual.</p>
+        <a class="app-btn-primary" routerLink="/">Volver al cat&aacute;logo</a>
+      </div>
+    </section>
+  }
 </main>

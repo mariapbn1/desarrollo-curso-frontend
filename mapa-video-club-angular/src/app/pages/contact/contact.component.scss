@@ -1,3 +1,77 @@
 :host {
   display: block;
 }
+
+.contact-shell {
+  display: grid;
+  gap: 1.25rem;
+  width: min(1080px, calc(100% - 2rem));
+  min-height: calc(100vh - 6rem);
+  margin: 0 auto;
+  padding: var(--space-section) 0;
+}
+
+.contact-panel,
+.contact-info {
+  display: grid;
+  gap: 1rem;
+}
+
+.contact-panel {
+  align-content: start;
+}
+
+.contact-message {
+  display: grid;
+  gap: 0.45rem;
+  padding: 1rem;
+  border: 1px solid rgba(37, 211, 102, 0.28);
+  border-radius: var(--radius-md);
+  background: rgba(37, 211, 102, 0.06);
+}
+
+.contact-message span,
+.contact-info dt {
+  color: var(--color-secondary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.contact-message p,
+.contact-info dd {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.contact-whatsapp-button {
+  width: fit-content;
+}
+
+.contact-info h2 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.contact-info dl {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.contact-info div {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.95rem;
+  border: 1px solid rgba(0, 217, 255, 0.18);
+  border-radius: var(--radius-md);
+  background: rgba(0, 217, 255, 0.04);
+}
+
+@media (min-width: 860px) {
+  .contact-shell {
+    grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.6fr);
+    align-items: start;
+  }
+}

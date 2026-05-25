@@ -43,6 +43,14 @@ describe('NavbarComponent', () => {
     expect(compiled.querySelector('[aria-label="Favoritos"]')).toBeNull();
   });
 
+  it('should include contact route', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    const contactLink = compiled.querySelector<HTMLAnchorElement>('a[href="/contacto"]');
+
+    expect(compiled.textContent).toContain('Contacto');
+    expect(contactLink).toBeTruthy();
+  });
+
   it('should show active user and logout', async () => {
     authService.registerUser({
       name: 'Laura',

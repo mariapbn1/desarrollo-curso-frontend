@@ -1,10 +1,43 @@
 <app-navbar />
 
-<main class="page-shell">
-  <div class="page-shell__content content-panel">
-    <h1 class="page-title">Contacto</h1>
-    <p class="page-copy">Pagina de contacto base para la fase 3.</p>
-  </div>
-</main>
+<main class="contact-shell">
+  <section class="contact-panel content-panel" aria-labelledby="contact-title">
+    <span class="section-tag">Atencion al cliente</span>
+    <h1 id="contact-title" class="page-title">Contacto</h1>
+    <p class="page-copy">
+      MAPA VIDEO CLUB es tu videoclub retro/neon para descubrir, rentar y guardar peliculas favoritas desde el
+      catalogo digital.
+    </p>
+    <p class="page-copy">
+      Si tienes una consulta general sobre una pelicula, disponibilidad o la experiencia de renta simulada, escribenos
+      por WhatsApp.
+    </p>
 
-<app-whatsapp-button />
+    <div class="contact-message">
+      <span>Mensaje sugerido</span>
+      <p>{{ whatsappMessage }}</p>
+    </div>
+
+    <button class="app-btn-primary contact-whatsapp-button" type="button" (click)="contactByWhatsapp()">
+      Contactar por WhatsApp
+    </button>
+  </section>
+
+  <aside class="contact-info content-panel" aria-label="Informacion de contacto">
+    <h2>Informacion general</h2>
+    <dl>
+      <div>
+        <dt>Canal</dt>
+        <dd>WhatsApp</dd>
+      </div>
+      <div>
+        <dt>Numero</dt>
+        <dd>+57 310 584 1049</dd>
+      </div>
+      <div>
+        <dt>Horario</dt>
+        <dd>Lunes a sabado</dd>
+      </div>
+    </dl>
+  </aside>
+</main>

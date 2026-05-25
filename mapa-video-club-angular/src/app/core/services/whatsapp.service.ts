@@ -1,18 +1,20 @@
 import { Injectable } from '@angular/core';
 
-import { Movie } from '../../models/movie.model';
+const WHATSAPP_NUMBER = '573105841049';
+const WHATSAPP_MESSAGE =
+  'Hola, quer\u00eda hacer una consulta sobre una pel\u00edcula de MAPA VIDEO CLUB.';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WhatsappService {
-  buildMovieMessage(movie: Movie): string {
-    return `Hola, quiero informacion sobre ${movie.title}.`;
+  readonly contactMessage = WHATSAPP_MESSAGE;
+
+  buildWhatsappUrl(): string {
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
   }
 
-  buildContactUrl(message: string): string {
-    const params = new URLSearchParams({ text: message });
-
-    return `https://wa.me/?${params.toString()}`;
+  openWhatsappContact(): void {
+    globalThis.open?.(this.buildWhatsappUrl(), '_blank', 'noopener,noreferrer');
   }
 }

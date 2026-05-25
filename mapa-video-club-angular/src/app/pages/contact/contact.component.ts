@@ -1,12 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
+import { WhatsappService } from '../../core/services/whatsapp.service';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
-import { WhatsappButtonComponent } from '../../shared/components/whatsapp-button/whatsapp-button.component';
 
 @Component({
   selector: 'app-contact',
-  imports: [NavbarComponent, WhatsappButtonComponent],
+  imports: [NavbarComponent],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })
-export class ContactComponent {}
+export class ContactComponent {
+  private readonly whatsappService = inject(WhatsappService);
+  readonly whatsappMessage = this.whatsappService.contactMessage;
+
+  contactByWhatsapp(): void {
+    this.whatsappService.openWhatsappContact();
+  }
+}

@@ -1,3 +1,32 @@
-<button class="whatsapp-float" type="button" aria-label="Contactar por WhatsApp">
+<button class="whatsapp-float" type="button" aria-label="Contactar por WhatsApp" (click)="openModal()">
   <img class="whatsapp-float__icon" src="assets/img/icons/icon-whatsapp-neon.png" alt="" />
 </button>
+
+<section
+  class="whatsapp-modal"
+  aria-label="Contacto por WhatsApp"
+  aria-modal="true"
+  role="dialog"
+  [hidden]="!isModalOpen()"
+>
+  <button class="whatsapp-modal__backdrop" type="button" aria-label="Cancelar" (click)="closeModal()"></button>
+
+  <div class="whatsapp-modal__panel">
+    <header class="whatsapp-modal__header">
+      <div>
+        <span>WhatsApp</span>
+        <h2>Contacto</h2>
+      </div>
+      <button class="whatsapp-modal__close" type="button" aria-label="Cerrar" (click)="closeModal()">
+        &times;
+      </button>
+    </header>
+
+    <p>{{ message }}</p>
+
+    <div class="whatsapp-modal__actions">
+      <button class="app-btn-secondary" type="button" (click)="closeModal()">Cancelar</button>
+      <button class="app-btn-primary" type="button" (click)="contact()">Contactar</button>
+    </div>
+  </div>
+</section>

@@ -12,7 +12,6 @@ import { FiltersBarComponent } from '../../shared/components/filters-bar/filters
 import { HeroComponent } from '../../shared/components/hero/hero.component';
 import { MovieCardComponent } from '../../shared/components/movie-card/movie-card.component';
 import { NavbarComponent } from '../../shared/components/navbar/navbar.component';
-import { WhatsappButtonComponent } from '../../shared/components/whatsapp-button/whatsapp-button.component';
 
 @Component({
   selector: 'app-home',
@@ -23,7 +22,6 @@ import { WhatsappButtonComponent } from '../../shared/components/whatsapp-button
     MovieCardComponent,
     NavbarComponent,
     RouterLink,
-    WhatsappButtonComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

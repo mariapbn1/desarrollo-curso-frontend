@@ -1,0 +1,13 @@
+<section class="movie-carousel">
+  <h2>{{ title }}</h2>
+
+  @if (movies.length > 0) {
+    <div class="movie-carousel__track">
+      @for (movie of movies; track movie.id) {
+        <app-movie-card [movie]="movie" />
+      }
+    </div>
+  } @else {
+    <p>Catalogo pendiente de migracion.</p>
+  }
+</section>

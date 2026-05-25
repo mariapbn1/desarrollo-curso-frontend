@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.movie-carousel {
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+}
+
+.movie-carousel__track {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+h2 {
+  margin: 0 0 1rem;
+}
+
+p {
+  color: #4a5160;
+}

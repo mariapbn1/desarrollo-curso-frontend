@@ -1,0 +1,14 @@
+<article class="movie-card">
+  @if (movie; as currentMovie) {
+    <a [routerLink]="['/pelicula', currentMovie.id]">
+      <img [src]="currentMovie.posterUrl" [alt]="currentMovie.title" />
+      <h3>{{ currentMovie.title }}</h3>
+      <p>{{ currentMovie.genre }} · {{ currentMovie.year }}</p>
+    </a>
+  } @else {
+    <div class="movie-card__placeholder">
+      <h3>Pelicula pendiente</h3>
+      <p>La data se migrara en un paso posterior.</p>
+    </div>
+  }
+</article>

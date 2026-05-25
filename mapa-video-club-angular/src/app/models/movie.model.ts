@@ -1,11 +1,21 @@
 export interface Movie {
-  id: string;
+  id: number;
   title: string;
-  synopsis: string;
   genre: string;
+  releaseDate: string;
   year: number;
-  posterUrl: string;
-  backdropUrl?: string;
-  durationMinutes?: number;
-  rating?: number;
+  rating: number;
+  synopsis: string;
+  review: string;
+  poster: string;
+  banner: string;
+  fallback: string;
+  actors: string[];
+  photos: string[];
+  rentalPrice: number;
+  format: string;
+  stock: number;
+  available: boolean;
+  rentalTime: string;
+  tags: string[];
 }

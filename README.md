@@ -1,3 +1,30 @@
+# MAPA VIDEO CLUB - Fase 3 Angular
+
+Este repositorio contiene dos versiones del proyecto:
+
+- Proyecto original HTML/JavaScript/Sass en la raiz del repositorio.
+- Proyecto migrado a Angular en `./mapa-video-club-angular`.
+
+El proyecto original se conserva como referencia de migracion. La entrega de la Fase 3 Angular debe revisarse y ejecutarse desde `mapa-video-club-angular/`.
+
+## Ejecutar version Angular
+
+```bash
+cd mapa-video-club-angular
+npm install
+npm start
+```
+
+La aplicacion abre por defecto en `http://localhost:4200/`.
+
+La documentacion tecnica completa de la migracion, rutas, arquitectura, servicios, componentes, persistencia y tests esta en:
+
+```text
+mapa-video-club-angular/README.md
+```
+
+---
+
 # MAPA CINEMA
 
 MAPA CINEMA es un proyecto frontend que consiste en un sitio web responsive diseñado como un catálogo visual de películas.

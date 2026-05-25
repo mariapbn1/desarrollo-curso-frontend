@@ -7,13 +7,22 @@ const WHATSAPP_MESSAGE =
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Construye el contacto general de WhatsApp sin vincularlo a pedidos o carrito.
+ */
 export class WhatsappService {
   readonly contactMessage = WHATSAPP_MESSAGE;
 
+  /**
+   * Genera la URL oficial de WhatsApp con mensaje codificado.
+   */
   buildWhatsappUrl(): string {
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
   }
 
+  /**
+   * Abre el canal de contacto en una pestana nueva.
+   */
   openWhatsappContact(): void {
     globalThis.open?.(this.buildWhatsappUrl(), '_blank', 'noopener,noreferrer');
   }

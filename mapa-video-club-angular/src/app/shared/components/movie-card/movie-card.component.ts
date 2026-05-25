@@ -11,6 +11,9 @@ import { Movie } from '../../../models/movie.model';
   templateUrl: './movie-card.component.html',
   styleUrl: './movie-card.component.scss',
 })
+/**
+ * Card reutilizable del catalogo con acciones preparadas para detalle, favoritas y carrito.
+ */
 export class MovieCardComponent {
   private readonly cartService = inject(CartService);
   private readonly favoriteService = inject(FavoriteService);
@@ -22,6 +25,9 @@ export class MovieCardComponent {
     return this.favoriteService.isFavorite(movieId);
   }
 
+  /**
+   * Alterna favorita sin disparar la navegacion de la card; sin sesion redirige a login.
+   */
   toggleFavorite(movieId: number, event: Event): void {
     event.preventDefault();
     event.stopPropagation();
@@ -33,6 +39,9 @@ export class MovieCardComponent {
     }
   }
 
+  /**
+   * Agrega al carrito desde la card evitando propagacion hacia el detalle.
+   */
   addToCart(movie: Movie, event: Event): void {
     event.preventDefault();
     event.stopPropagation();

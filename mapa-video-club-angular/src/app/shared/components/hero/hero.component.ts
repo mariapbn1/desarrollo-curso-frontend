@@ -11,6 +11,9 @@ import { Movie } from '../../../models/movie.model';
   templateUrl: './hero.component.html',
   styleUrl: './hero.component.scss',
 })
+/**
+ * Hero de pelicula destacada con acciones equivalentes a las cards del catalogo.
+ */
 export class HeroComponent {
   private readonly cartService = inject(CartService);
   private readonly favoriteService = inject(FavoriteService);
@@ -22,6 +25,9 @@ export class HeroComponent {
     return this.favoriteService.isFavorite(movieId);
   }
 
+  /**
+   * Alterna favorita desde el hero y exige sesion para persistirla.
+   */
   toggleFavorite(movieId: number): void {
     const result = this.favoriteService.toggleFavorite(movieId);
 
@@ -30,6 +36,9 @@ export class HeroComponent {
     }
   }
 
+  /**
+   * Agrega la pelicula destacada al carrito simulado.
+   */
   addToCart(movie: Movie): void {
     this.cartService.addToCart(movie.id);
   }

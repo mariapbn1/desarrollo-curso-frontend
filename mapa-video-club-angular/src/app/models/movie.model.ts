@@ -1,3 +1,6 @@
+/**
+ * Contrato principal del catalogo local usado por cards, hero, detalle y filtros.
+ */
 export interface Movie {
   id: number;
   title: string;

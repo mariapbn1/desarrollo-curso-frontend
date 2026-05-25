@@ -1,3 +1,6 @@
+/**
+ * Usuario persistido localmente; la contrasena solo se usa en esta simulacion sin backend.
+ */
 export interface User {
   id: string;
   name: string;
@@ -6,6 +9,9 @@ export interface User {
   createdAt?: string;
 }
 
+/**
+ * Datos minimos de sesion que consumen navbar, favoritas y checkout.
+ */
 export interface SessionUser {
   id: string;
   name: string;
@@ -22,6 +28,9 @@ export interface RegisterData extends LoginData {
   confirmPassword: string;
 }
 
+/**
+ * Resultado comun para login y registro con mensaje listo para la vista.
+ */
 export interface AuthResult {
   success: boolean;
   message: string;

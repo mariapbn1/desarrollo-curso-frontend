@@ -10,18 +10,27 @@ const STORAGE_KEYS = {
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Gestiona usuarios y sesion activa con localStorage, sin backend.
+ */
 export class AuthService {
   private readonly currentUserSignal = signal<SessionUser | null>(
     this.readStorage<SessionUser | null>(STORAGE_KEYS.session, null),
   );
   readonly currentUser = this.currentUserSignal.asReadonly();
 
+  /**
+   * Lee usuarios registrados y protege la app ante datos corruptos en localStorage.
+   */
   getUsers(): User[] {
     const users = this.readStorage<User[]>(STORAGE_KEYS.users, []);
 
     return Array.isArray(users) ? users : [];
   }
 
+  /**
+   * Registra un usuario nuevo tras validar campos, correo, contrasena y duplicados.
+   */
   registerUser(userData: RegisterData): AuthResult {
     const name = String(userData.name || '').trim();
     const email = this.normalizeEmail(userData.email);
@@ -66,6 +75,9 @@ export class AuthService {
     return { success: true, message: 'Registro exitoso. Ya puedes iniciar sesion.' };
   }
 
+  /**
+   * Valida credenciales locales y persiste una sesion reducida sin contrasena.
+   */
   loginUser(email: string, password: string): AuthResult {
     const normalizedEmail = this.normalizeEmail(email);
     const cleanPassword = String(password || '');
@@ -103,11 +115,17 @@ export class AuthService {
     return { success: true, message: 'Sesion iniciada.', user: sessionUser };
   }
 
+  /**
+   * Cierra la sesion actual y sincroniza el estado reactivo del navbar y paginas.
+   */
   logoutUser(): void {
     this.removeStorage(STORAGE_KEYS.session);
     this.currentUserSignal.set(null);
   }
 
+  /**
+   * Expone la sesion activa para servicios que dependen del usuario autenticado.
+   */
   getCurrentUser(): SessionUser | null {
     return this.currentUserSignal();
   }

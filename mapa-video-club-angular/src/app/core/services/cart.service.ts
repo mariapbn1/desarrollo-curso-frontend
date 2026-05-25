@@ -15,6 +15,9 @@ const STORAGE_KEY = 'mapaVideoClubCart';
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Administra el carrito simulado y combina sus ids con peliculas reales del catalogo.
+ */
 export class CartService {
   private readonly movieService = inject(MovieService);
   private readonly cartSignal = signal<CartEntry[]>(this.readCart());
@@ -42,6 +45,9 @@ export class CartService {
     }
   }
 
+  /**
+   * Agrega una pelicula disponible, evitando duplicados y titulos agotados.
+   */
   addToCart(movieId: number | string): CartResult {
     const normalizedMovieId = this.normalizeMovieId(movieId);
     const movie = normalizedMovieId ? this.movieService.getMovieById(normalizedMovieId) : undefined;
@@ -67,6 +73,9 @@ export class CartService {
     ], 'Pelicula agregada al carrito.');
   }
 
+  /**
+   * Elimina una pelicula del carrito persistido.
+   */
   removeFromCart(movieId: number | string): CartResult {
     const normalizedMovieId = this.normalizeMovieId(movieId);
     const nextCart = this.cartSignal().filter((item) => item.movieId !== normalizedMovieId);
@@ -74,6 +83,9 @@ export class CartService {
     return this.saveCart(nextCart, 'Pelicula eliminada del carrito.');
   }
 
+  /**
+   * Vacia el carrito despues de una compra simulada o accion explicita.
+   */
   clearCart(): CartResult {
     return this.saveCart([], 'Carrito vacio.');
   }
@@ -82,16 +94,25 @@ export class CartService {
     this.clearCart();
   }
 
+  /**
+   * Revisa si la pelicula ya fue agregada al carrito.
+   */
   isInCart(movieId: number | string): boolean {
     const normalizedMovieId = this.normalizeMovieId(movieId);
 
     return this.cartSignal().some((item) => item.movieId === normalizedMovieId);
   }
 
+  /**
+   * Enriquece el carrito con datos del catalogo y omite peliculas inexistentes.
+   */
   getCartItems(): readonly CartItem[] {
     return [...this.cartItems()];
   }
 
+  /**
+   * Calcula el total actual con precio de renta por cantidad.
+   */
   getCartTotal(): number {
     return this.cartTotal();
   }

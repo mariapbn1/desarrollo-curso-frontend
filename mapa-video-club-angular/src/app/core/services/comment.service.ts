@@ -9,9 +9,15 @@ const STORAGE_KEY = 'mapaVideoClubComments';
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Persiste comentarios por pelicula en localStorage y los entrega del mas reciente al mas antiguo.
+ */
 export class CommentService {
   private readonly commentsMap = signal<CommentsMap>(this.readCommentsMap());
 
+  /**
+   * Obtiene comentarios de una pelicula sin mezclar datos entre ids.
+   */
   getComments(movieId: number | string): readonly Comment[] {
     const movieKey = this.normalizeMovieId(movieId);
 
@@ -22,6 +28,9 @@ export class CommentService {
     return this.getComments(movieId);
   }
 
+  /**
+   * Guarda una lista normalizada de comentarios para una pelicula concreta.
+   */
   saveComments(movieId: number | string, comments: readonly Comment[]): boolean {
     const movieKey = this.normalizeMovieId(movieId);
     const nextComments = this.sortComments(
@@ -54,6 +63,9 @@ export class CommentService {
     this.commentsMap.set(groupedComments);
   }
 
+  /**
+   * Agrega un comentario validando nombre y texto antes de persistirlo.
+   */
   addComment(movieId: number | string, commentData: CommentFormData): CommentResult {
     const movieKey = this.normalizeMovieId(movieId);
     const name = String(commentData.name || '').trim();
@@ -86,6 +98,9 @@ export class CommentService {
     };
   }
 
+  /**
+   * Elimina un comentario especifico de la pelicula actual.
+   */
   deleteComment(movieId: number | string, commentId: number | string): boolean {
     const movieKey = this.normalizeMovieId(movieId);
     const nextComments = this.getComments(movieKey).filter(

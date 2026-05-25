@@ -16,6 +16,9 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
   templateUrl: './movie-detail.component.html',
   styleUrl: './movie-detail.component.scss',
 })
+/**
+ * Renderiza el detalle desde el id de la ruta e integra acciones visuales del catalogo.
+ */
 export class MovieDetailComponent {
   readonly movieId: string;
   readonly movie?: Movie;
@@ -44,6 +47,9 @@ export class MovieDetailComponent {
     return this.favoriteService.isFavorite(movieId);
   }
 
+  /**
+   * Alterna favorita o redirige a login si la accion requiere sesion.
+   */
   toggleFavorite(movieId: number): void {
     const result = this.favoriteService.toggleFavorite(movieId);
 
@@ -52,6 +58,9 @@ export class MovieDetailComponent {
     }
   }
 
+  /**
+   * Agrega la pelicula al carrito simulado desde la vista de detalle.
+   */
   addToCart(movie: Movie): void {
     this.cartService.addToCart(movie.id);
   }
@@ -72,6 +81,9 @@ export class MovieDetailComponent {
     return this.isInCart(movie.id) ? 'En carrito' : 'Agregar al carrito';
   }
 
+  /**
+   * Guarda un comentario asociado solo a la pelicula actual.
+   */
   submitComment(): void {
     const result = this.commentService.addComment(this.movieId, this.commentForm);
 
@@ -87,6 +99,9 @@ export class MovieDetailComponent {
     }
   }
 
+  /**
+   * Elimina un comentario y refresca la lista persistida.
+   */
   deleteComment(commentId: number): void {
     const wasDeleted = this.commentService.deleteComment(this.movieId, commentId);
 

@@ -12,6 +12,9 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss',
 })
+/**
+ * Controla login y registro local reutilizando las reglas de AuthService.
+ */
 export class AuthComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
@@ -30,12 +33,18 @@ export class AuthComponent {
     confirmPassword: '',
   };
 
+  /**
+   * Cambia entre login y registro limpiando mensajes de la vista.
+   */
   showMode(mode: 'login' | 'register'): void {
     this.mode = mode;
     this.message = '';
     this.messageType = '';
   }
 
+  /**
+   * Inicia sesion y vuelve al catalogo cuando las credenciales son validas.
+   */
   submitLogin(): void {
     const result = this.authService.loginUser(this.loginData.email, this.loginData.password);
 
@@ -46,6 +55,9 @@ export class AuthComponent {
     }
   }
 
+  /**
+   * Registra un usuario y prepara el formulario de login tras un alta correcta.
+   */
   submitRegister(): void {
     const result = this.authService.registerUser(this.registerData);
 

@@ -28,6 +28,9 @@ import { NavbarComponent } from '../../shared/components/navbar/navbar.component
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
+/**
+ * Orquesta la home: hero, carrusel, secciones destacadas, filtros y vista de favoritas.
+ */
 export class HomeComponent {
   private readonly authService = inject(AuthService);
   private readonly favoriteService = inject(FavoriteService);
@@ -76,6 +79,9 @@ export class HomeComponent {
     return this.hasActiveFilters() ? 'Resultados filtrados' : 'Todas las peliculas';
   });
 
+  /**
+   * Aplica filtros activos al catalogo y restaura la vista normal cuando se limpian.
+   */
   onFiltersChange(filters: MovieFilters): void {
     const nextFilters = this.normalizeFilters(filters);
 

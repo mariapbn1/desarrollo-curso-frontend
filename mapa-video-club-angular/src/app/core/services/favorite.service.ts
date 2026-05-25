@@ -17,6 +17,9 @@ const STORAGE_KEY = 'mapaVideoClubFavorites';
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Mantiene favoritas separadas por correo del usuario activo.
+ */
 export class FavoriteService {
   private readonly authService = inject(AuthService);
   private readonly favoritesMap = signal<FavoritesMap>(this.readFavoritesMap());
@@ -26,6 +29,9 @@ export class FavoriteService {
     return email ? this.normalizeFavoriteList(this.favoritesMap()[email] ?? []) : [];
   });
 
+  /**
+   * Devuelve las favoritas del usuario autenticado; sin sesion retorna lista vacia.
+   */
   getFavorites(): readonly FavoriteMovieId[] {
     return [...this.currentFavorites()];
   }
@@ -34,6 +40,9 @@ export class FavoriteService {
     return this.getFavorites().map((movieId) => String(movieId));
   }
 
+  /**
+   * Consulta si una pelicula pertenece a la lista del usuario actual.
+   */
   isFavorite(movieId: FavoriteMovieId): boolean {
     const normalizedMovieId = this.normalizeMovieId(movieId);
 
@@ -42,6 +51,9 @@ export class FavoriteService {
     );
   }
 
+  /**
+   * Alterna favorita y bloquea la accion cuando no existe sesion activa.
+   */
   toggleFavorite(movieId: FavoriteMovieId): FavoriteResult {
     const email = this.getCurrentUserEmail();
 
@@ -52,6 +64,9 @@ export class FavoriteService {
     return this.isFavorite(movieId) ? this.removeFavorite(movieId) : this.addFavorite(movieId);
   }
 
+  /**
+   * Agrega una favorita sin duplicar ids dentro del usuario actual.
+   */
   addFavorite(movieId: FavoriteMovieId): FavoriteResult {
     const email = this.getCurrentUserEmail();
 
@@ -66,6 +81,9 @@ export class FavoriteService {
     return this.updateFavorites(email, [...this.currentFavorites(), this.serializeMovieId(movieId)], movieId);
   }
 
+  /**
+   * Quita una pelicula solo de la lista del usuario autenticado.
+   */
   removeFavorite(movieId: FavoriteMovieId): FavoriteResult {
     const email = this.getCurrentUserEmail();
 
@@ -81,6 +99,9 @@ export class FavoriteService {
     return this.updateFavorites(email, nextFavorites, movieId);
   }
 
+  /**
+   * Limpia todas las favoritas del usuario activo sin afectar a otros usuarios.
+   */
   clearFavoritesForCurrentUser(): FavoriteResult {
     const email = this.getCurrentUserEmail();
 

@@ -7,23 +7,38 @@ import { Movie } from '../../models/movie.model';
 @Injectable({
   providedIn: 'root',
 })
+/**
+ * Centraliza las consultas del catalogo local migrado desde el proyecto legacy.
+ */
 export class MovieService {
   private readonly movies = signal<Movie[]>([...MOVIES]);
 
+  /**
+   * Devuelve una copia del catalogo para evitar mutaciones directas sobre la data base.
+   */
   getMovies(): Movie[] {
     return [...this.movies()];
   }
 
+  /**
+   * Busca una pelicula por id aceptando parametros numericos o provenientes de rutas.
+   */
   getMovieById(id: number | string): Movie | undefined {
     return this.movies().find((movie) => String(movie.id) === String(id));
   }
 
+  /**
+   * Ordena novedades por fecha de estreno descendente y respeta el limite solicitado.
+   */
   getLatestMovies(limit = this.movies().length): Movie[] {
     return this.getMovies()
       .sort((movieA, movieB) => this.sortByDateDesc(movieA, movieB))
       .slice(0, this.normalizeLimit(limit));
   }
 
+  /**
+   * Obtiene peliculas marcadas con el tag de negocio "Top renta".
+   */
   getTopRentalMovies(limit = this.movies().length): Movie[] {
     return this.getMovies()
       .filter((movie) => this.hasTag(movie, 'Top renta'))
@@ -31,6 +46,9 @@ export class MovieService {
       .slice(0, this.normalizeLimit(limit));
   }
 
+  /**
+   * Ordena populares por calificacion y usa la fecha como desempate.
+   */
   getPopularMovies(limit = this.movies().length): Movie[] {
     return this.getMovies()
       .sort((movieA, movieB) => movieB.rating - movieA.rating || this.sortByDateDesc(movieA, movieB))
@@ -41,6 +59,9 @@ export class MovieService {
     return this.getPopularMovies(limit);
   }
 
+  /**
+   * Aplica filtros combinables del catalogo; la busqueda textual se limita al titulo.
+   */
   filterMovies(filters: MovieFilters = {}): Movie[] {
     const normalizedSearch = this.normalizeText(filters.search);
     const normalizedGenre = this.normalizeText(filters.genre);

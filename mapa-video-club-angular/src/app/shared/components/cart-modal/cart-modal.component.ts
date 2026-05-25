@@ -11,6 +11,9 @@ import { CartItem } from '../../../models/cart-item.model';
   templateUrl: './cart-modal.component.html',
   styleUrl: './cart-modal.component.scss',
 })
+/**
+ * Presenta el carrito simulado y coordina la compra segun exista sesion activa.
+ */
 export class CartModalComponent {
   private readonly authService = inject(AuthService);
   private readonly cartService = inject(CartService);
@@ -33,11 +36,17 @@ export class CartModalComponent {
     this.router.navigateByUrl('/');
   }
 
+  /**
+   * Retira una pelicula del carrito manteniendo el modal abierto.
+   */
   removeFromCart(movieId: number): void {
     this.checkoutMessage = '';
     this.cartService.removeFromCart(movieId);
   }
 
+  /**
+   * Compra solo con sesion; sin usuario conserva carrito y redirige a login.
+   */
   buyCart(): void {
     if (this.cartItems().length === 0) {
       return;
